@@ -18,7 +18,7 @@ class FlickrClient {
         
         var stringValue: String {
             switch self {
-            case .getPhotosForLocation(let lat, let lon, let page): return Endpoints.base + "api_key=\(ApiKey.key)" + "&format=json" + "&lat=\(lat)" + "&lon=\(lon)" + "&radius=7" + "&page=\(page)"
+            case .getPhotosForLocation(let lat, let lon, let page): return Endpoints.base + "api_key=\(FlickrApiKey.key)" + "&format=json" + "&lat=\(lat)" + "&lon=\(lon)" + "&radius=7" + "&page=\(page)"
             }
         }
         
