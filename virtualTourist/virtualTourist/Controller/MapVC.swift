@@ -23,19 +23,26 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     
     //Handle gesture recognizer tapping
     @objc func handleTap(sender: UILongPressGestureRecognizer) {
-        print("user tapped")
-        let location = sender.location(in: mapView)
-        let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
-        // Add annotation:
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        mapView.addAnnotation(annotation)
+        if sender.state == .began {
+            self.becomeFirstResponder()
+            print("user tapped")
+            let location = sender.location(in: mapView)
+            let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
+            // Add annotation:
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            mapView.addAnnotation(annotation)
+        }
+        sender.state = .ended
     }
     
     func configureGestureRecognizer() {
         let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleTap))
         gestureRecognizer.delegate = self
         mapView.addGestureRecognizer(gestureRecognizer)
+        gestureRecognizer.minimumPressDuration = 0.7
+        gestureRecognizer.numberOfTapsRequired = 0
+        
     }
 }
 
