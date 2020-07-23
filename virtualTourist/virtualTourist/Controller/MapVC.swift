@@ -9,10 +9,12 @@
 import Foundation
 import UIKit
 import MapKit
+import CoreData
 
 class MapVC: UIViewController, UIGestureRecognizerDelegate {
     
-    var dataController: DataController!
+    
+    var fetchedResultsController: NSFetchedResultsController<Pin>!
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -20,6 +22,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         mapView.delegate = self
         configureGestureRecognizer()
+        
         
     }
     
@@ -32,6 +35,14 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
             let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
             let lat = coordinate.latitude
             let lon = coordinate.longitude
+            let pin = Pin(context: DataController.shared.viewContext)
+            pin.lat = lat
+            pin.lon = lon
+            try? DataController.shared.viewContext.save()
+            // Test if info is saved to Core Data
+            print(pin.lat)
+            print(pin.lon)
+            
             
             // Add annotation:
             let annotation = MKPointAnnotation()

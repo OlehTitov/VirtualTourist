@@ -11,7 +11,7 @@ import CoreData
 
 class DataController {
     
-    static let global = DataController(modelName: "virtualTourist")
+    static let shared = DataController(modelName: "virtualTourist")
     
     let persistentContainer: NSPersistentContainer
     
