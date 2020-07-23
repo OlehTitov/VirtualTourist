@@ -11,22 +11,36 @@ import UIKit
 import MapKit
 import CoreData
 
-class MapVC: UIViewController, UIGestureRecognizerDelegate {
+class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     
-    
+    //MARK: - PROPERTIES
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     
     @IBOutlet weak var mapView: MKMapView!
     
+    //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         configureGestureRecognizer()
-        
-        
+        setupFetchedResultsController()
+        attachPins()
     }
     
-    //Handle gesture recognizer tapping
+    //MARK: - VIEW WILL APPEAR
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupFetchedResultsController()
+    }
+    
+    //MARK: - VIEW WILL DISAPPEAR
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        fetchedResultsController = nil
+    }
+    
+    //MARK: - METHODS
+    // Handle gesture recognizer tapping
     @objc func handleTap(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
             self.becomeFirstResponder()
@@ -39,10 +53,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
             pin.lat = lat
             pin.lon = lon
             try? DataController.shared.viewContext.save()
-            // Test if info is saved to Core Data
-            print(pin.lat)
-            print(pin.lon)
-            
             
             // Add annotation:
             let annotation = MKPointAnnotation()
@@ -60,6 +70,33 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         gestureRecognizer.numberOfTapsRequired = 0
         
     }
+    
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        fetchRequest.sortDescriptors = []
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.shared.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
+    
+    func attachPins() {
+        guard let pins = fetchedResultsController.fetchedObjects else {
+            return
+        }
+        for pin in pins {
+            let lat = CLLocationDegrees(pin.lat)
+            let lon = CLLocationDegrees(pin.lon)
+            let coordinates = CLLocationCoordinate2DMake(lat, lon)
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinates
+            self.mapView.addAnnotation(annotation)
+        }
+    }
+    
 }
 
 extension MapVC: MKMapViewDelegate {
