@@ -12,6 +12,8 @@ import MapKit
 
 class MapVC: UIViewController, UIGestureRecognizerDelegate {
     
+    var dataController: DataController!
+    
     @IBOutlet weak var mapView: MKMapView!
     
     override func viewDidLoad() {
@@ -28,6 +30,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
             print("user tapped")
             let location = sender.location(in: mapView)
             let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
+            let lat = coordinate.latitude
+            let lon = coordinate.longitude
+            
             // Add annotation:
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
