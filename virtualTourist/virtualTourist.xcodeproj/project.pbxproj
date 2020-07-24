@@ -20,6 +20,7 @@
 		7CD6831E24C8C22E0091ED52 /* PhotosSearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6831D24C8C22E0091ED52 /* PhotosSearchResponse.swift */; };
 		7CD6832124C93BF40091ED52 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832024C93BF40091ED52 /* DataController.swift */; };
 		7CD6832424C944310091ED52 /* virtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832224C944310091ED52 /* virtualTourist.xcdatamodeld */; };
+		7CD6832624CA8E320091ED52 /* PhotoAlbumVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		7CD6831D24C8C22E0091ED52 /* PhotosSearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosSearchResponse.swift; sourceTree = "<group>"; };
 		7CD6832024C93BF40091ED52 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		7CD6832324C944310091ED52 /* virtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = virtualTourist.xcdatamodel; sourceTree = "<group>"; };
+		7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 			children = (
 				7C45530824C6EB97001B5305 /* tabBarVC.swift */,
 				7C1EFB6524C733DB005CF2D9 /* MapVC.swift */,
+				7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -203,6 +206,7 @@
 				7CD6831924C887B40091ED52 /* FlickrApiKey.swift in Sources */,
 				7CD6832424C944310091ED52 /* virtualTourist.xcdatamodeld in Sources */,
 				7CD6831524C856EC0091ED52 /* FlickrClient.swift in Sources */,
+				7CD6832624CA8E320091ED52 /* PhotoAlbumVC.swift in Sources */,
 				7C1EFB6624C733DB005CF2D9 /* MapVC.swift in Sources */,
 				7CD6832124C93BF40091ED52 /* DataController.swift in Sources */,
 				7C45530524C6EB97001B5305 /* AppDelegate.swift in Sources */,
