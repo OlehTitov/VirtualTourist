@@ -102,6 +102,10 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         self.navigationController?.pushViewController(photoAlbumVC, animated: true)
     }
     
+    func handleGetListOfPhotosForLocation(photos: [Photo], error: Error?) {
+        print(photos)
+    }
+    
 }
 
 extension MapVC: MKMapViewDelegate {
@@ -136,6 +140,9 @@ extension MapVC: MKMapViewDelegate {
         
         // Go to PhotoAlbumVC
         self.navigationController?.pushViewController(photoAlbumVC, animated: true)
+        
+        // Network request to get images
+        FlickrClient.getListOfPhotosForLocation(lat: annotation?.coordinate.latitude ?? 0.0, lon: annotation?.coordinate.longitude ?? 0.0, radius: 7, page: 1, completion: handleGetListOfPhotosForLocation(photos:error:))
         
         //Deselect annotation
         mapView.deselectAnnotation(view.annotation!, animated: false)
