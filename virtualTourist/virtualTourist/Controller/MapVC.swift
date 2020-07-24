@@ -125,8 +125,19 @@ extension MapVC: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        // Center map view when annotation is selected
-        let region = MKCoordinateRegion(center: view.annotation!.coordinate, span: mapView.region.span)
-        mapView.setRegion(region, animated: true)
+        // Get map prperties to pass to next VC
+        let annotation = view.annotation
+        let altitude = mapView.camera.altitude
+        
+        // Set properties for PhotoAlbumVC
+        let photoAlbumVC = self.storyboard?.instantiateViewController(identifier: "PhotoAlbumVC") as! PhotoAlbumVC
+        photoAlbumVC.altitude = altitude
+        photoAlbumVC.annotation = annotation
+        
+        // Go to PhotoAlbumVC
+        self.navigationController?.pushViewController(photoAlbumVC, animated: true)
+        
+        //Deselect annotation
+        mapView.deselectAnnotation(view.annotation!, animated: false)
     }
 }
