@@ -73,7 +73,7 @@
         <!--Photo AlbumVC-->
         <scene sceneID="Ezl-QS-F3x">
             <objects>
-                <viewController id="2t7-gc-Ptt" customClass="PhotoAlbumVC" customModule="virtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoAlbumVC" id="2t7-gc-Ptt" customClass="PhotoAlbumVC" customModule="virtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OfH-5P-8dF">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -127,6 +127,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="K8T-67-sfV"/>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="DaI-yI-UFi" id="cKL-wz-KRu"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xsg-wA-GCV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

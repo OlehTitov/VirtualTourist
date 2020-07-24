@@ -97,6 +97,11 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         }
     }
     
+    func showPhotoAlbum() {
+        let photoAlbumVC = self.storyboard?.instantiateViewController(identifier: "PhotoAlbumVC") as! PhotoAlbumVC
+        self.navigationController?.pushViewController(photoAlbumVC, animated: true)
+    }
+    
 }
 
 extension MapVC: MKMapViewDelegate {
@@ -117,5 +122,11 @@ extension MapVC: MKMapViewDelegate {
         }
         
         return pinView
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        // Center map view when annotation is selected
+        let region = MKCoordinateRegion(center: view.annotation!.coordinate, span: mapView.region.span)
+        mapView.setRegion(region, animated: true)
     }
 }

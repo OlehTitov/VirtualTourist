@@ -13,6 +13,8 @@ import CoreData
 
 class PhotoAlbumVC: UIViewController {
     
+    @IBOutlet weak var mapView: MKMapView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
