@@ -15,6 +15,7 @@ class PhotoAlbumVC: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var collectionView: UICollectionView!
     
     var altitude: CLLocationDistance!
     var annotation : MKAnnotation!
