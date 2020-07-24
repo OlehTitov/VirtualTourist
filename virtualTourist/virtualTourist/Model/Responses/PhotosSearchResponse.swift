@@ -31,4 +31,8 @@ struct Photo: Codable {
     let ispublic: Int
     let isfriend: Int
     let isfamily: Int
+    // Create URL for image file
+    var imageURL: String? {
+        return "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret).jpg"
+    }
 }
