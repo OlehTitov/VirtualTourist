@@ -22,6 +22,7 @@
 		7CD6832424C944310091ED52 /* virtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832224C944310091ED52 /* virtualTourist.xcdatamodeld */; };
 		7CD6832624CA8E320091ED52 /* PhotoAlbumVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */; };
 		7CD6832824CAE63F0091ED52 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832724CAE63F0091ED52 /* CollectionViewCell.swift */; };
+		7CD6832A24CDBD050091ED52 /* LocationsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832924CDBD050091ED52 /* LocationsListVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		7CD6832324C944310091ED52 /* virtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = virtualTourist.xcdatamodel; sourceTree = "<group>"; };
 		7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumVC.swift; sourceTree = "<group>"; };
 		7CD6832724CAE63F0091ED52 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		7CD6832924CDBD050091ED52 /* LocationsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 				7C1EFB6524C733DB005CF2D9 /* MapVC.swift */,
 				7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */,
 				7CD6832724CAE63F0091ED52 /* CollectionViewCell.swift */,
+				7CD6832924CDBD050091ED52 /* LocationsListVC.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -207,6 +210,7 @@
 			files = (
 				7C45530924C6EB97001B5305 /* tabBarVC.swift in Sources */,
 				7CD6831924C887B40091ED52 /* FlickrApiKey.swift in Sources */,
+				7CD6832A24CDBD050091ED52 /* LocationsListVC.swift in Sources */,
 				7CD6832824CAE63F0091ED52 /* CollectionViewCell.swift in Sources */,
 				7CD6832424C944310091ED52 /* virtualTourist.xcdatamodeld in Sources */,
 				7CD6831524C856EC0091ED52 /* FlickrClient.swift in Sources */,

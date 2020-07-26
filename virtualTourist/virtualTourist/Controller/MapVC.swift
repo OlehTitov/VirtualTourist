@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import MapKit
 import CoreData
+import CoreLocation
 
 class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     
@@ -53,8 +54,21 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             let pin = Pin(context: DataController.shared.viewContext)
             pin.lat = lat
             pin.lon = lon
+            // Reverse geocode
+            getPlaceName(pin: pin) { (address) in
+                guard let address = address else {
+                    return
+                }
+                let country = address.country
+                let street = address.name
+                let city = address.locality
+                print("\(street) \(city) \(country)")
+                pin.street = street
+                pin.city = city
+                pin.country = country
+            }
             try? DataController.shared.viewContext.save()
-            
+            setupFetchedResultsController()
             // Add annotation:
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
@@ -82,6 +96,21 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             try fetchedResultsController.performFetch()
         } catch {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
+    
+    //MARK: - REVERSE GEOCODING TO GET ADDRESS
+    // The address name will be used in the table view
+    func getPlaceName(pin: Pin, completion: @escaping (CLPlacemark?) -> Void) {
+        let location = CLLocation(latitude: pin.lat, longitude: pin.lon)
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { (address, error) in
+            if error == nil {
+                let firstAddress = address?[0]
+                completion(firstAddress)
+            } else {
+                completion(nil)
+            }
         }
     }
     

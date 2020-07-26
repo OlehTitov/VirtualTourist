@@ -14,10 +14,8 @@ import CoreData
 class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
     
     //MARK: - PROPERTIES
-    enum Section {
-        case main
-    }
-    var dataSource: UICollectionViewDiffableDataSource<Section, Int>! = nil
+    var dataSource: UICollectionViewDiffableDataSource<Int, SavedPhoto>?
+    var snapshot = NSDiffableDataSourceSnapshot<Int, SavedPhoto>()
     var altitude: CLLocationDistance!
     var annotation : MKAnnotation!
     var fetchedResultsController: NSFetchedResultsController<SavedPhoto>!
@@ -31,17 +29,25 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
     //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupMapView()
-        configureDataSource()
         setupFetchedResultsController()
+        configureDataSource()
+        collectionView.delegate = self
+        collectionView.dataSource = dataSource
         // Network request to get images for the selected location
         FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: 1, completion: handleGetListOfPhotosForLocation(photos:error:))
+        setupMapView()
     }
     
     //MARK: - VIEW WILL APPEAR
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupFetchedResultsController()
+    }
+    
+    //MARK: - VIEW WILL DISAPPEAR
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        fetchedResultsController = nil
     }
     
     //MARK: - METHODS
@@ -61,16 +67,16 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
             }
             FlickrClient.downloadImage(path: photoURL, completion: handleImageDownload(data:error:))
         }
+        setupSnapshot()
     }
     
     func handleImageDownload(data: Data?, error: Error?) {
         guard let data = data else {
             return
         }
-        // TO-DO: Save images to Core Data
+        // Save images to Core Data
         let image = SavedPhoto(context: DataController.shared.viewContext)
         image.image = data
-        print(image.image)
         try? DataController.shared.viewContext.save()
     }
     
@@ -83,6 +89,7 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
         fetchedResultsController.delegate = self
         do {
             try fetchedResultsController.performFetch()
+            setupSnapshot()
         } catch {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
@@ -90,18 +97,63 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
  
     
     private func configureDataSource() {
-        let dataSource = UICollectionViewDiffableDataSource<Section, Int>(collectionView: collectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, identifier: Int) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<Int, SavedPhoto>(collectionView: collectionView) {
+            (collectionView: UICollectionView, indexPath: IndexPath, photo: SavedPhoto) -> UICollectionViewCell? in
             
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: CollectionViewCell.identifier,
                 for: indexPath) as? CollectionViewCell else { fatalError("Cannot create new cell") }
-
+            cell.backgroundColor = .red
             // Populate the cell with image
-            //cell.image.image = "\(identifier)"
-
+            let image = UIImage(data: photo.image!)
+            cell.image.image = image
             return cell
         }
+        setupSnapshot()
+    }
+    
+    fileprivate func setupSnapshot() {
+        snapshot = NSDiffableDataSourceSnapshot<Int, SavedPhoto>()
+        snapshot.appendSections([0])
+        snapshot.appendItems(fetchedResultsController.fetchedObjects ?? [])
+        dataSource?.apply(self.snapshot, animatingDifferences: false)
+    }
+    
+    // Update collectionView when data is changing
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        setupSnapshot()
+    }
+    
+    // Create Layout
+    func configureLayout() {
+        //1
+        collectionView.collectionViewLayout = createRowLayout()
+    }
+
+    func createRowLayout() -> UICollectionViewLayout {
+        //2
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                              heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        //3
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .fractionalWidth(0.33))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
+                                                       subitem: item, count: 3)
+        
+        //4
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        
+        //5
+        let spacing = CGFloat(10)
+        group.interItemSpacing = .fixed(spacing)
+        section.interGroupSpacing = spacing
+        
+        //6
+        let layout = UICollectionViewCompositionalLayout(section: section)
+        return layout
     }
     
 }
@@ -125,5 +177,9 @@ extension PhotoAlbumVC: MKMapViewDelegate {
         
         return pinView
     }
+}
+
+extension PhotoAlbumVC: UICollectionViewDelegate {
+    
 }
 
