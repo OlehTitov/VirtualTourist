@@ -20,7 +20,7 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
     var dataSource: UICollectionViewDiffableDataSource<Section, Int>! = nil
     var altitude: CLLocationDistance!
     var annotation : MKAnnotation!
-    var fetchedResultsController: NSFetchedResultsController<Pin>!
+    var fetchedResultsController: NSFetchedResultsController<SavedPhoto>!
     var selectedPin: Pin!
     
     //MARK: - OUTLETS
@@ -33,9 +33,15 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
         super.viewDidLoad()
         setupMapView()
         configureDataSource()
-        //setupFetchedResultsController()
-        // Network request to get images
+        setupFetchedResultsController()
+        // Network request to get images for the selected location
         FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: 1, completion: handleGetListOfPhotosForLocation(photos:error:))
+    }
+    
+    //MARK: - VIEW WILL APPEAR
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupFetchedResultsController()
     }
     
     //MARK: - METHODS
@@ -48,7 +54,7 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
     }
     
     func handleGetListOfPhotosForLocation(photos: [Photo], error: Error?) {
-        // TO DO: begin download images for pin, save to Core Data
+        // Download images for pin, save to Core Data
         for photo in photos {
             guard let photoURL = URL(string: photo.imageURL ?? "") else {
                 return
@@ -61,16 +67,18 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
         guard let data = data else {
             return
         }
-        print(data)
+        // TO-DO: Save images to Core Data
+        let image = SavedPhoto(context: DataController.shared.viewContext)
+        image.image = data
+        print(image.image)
+        try? DataController.shared.viewContext.save()
     }
-    /*
+    
     fileprivate func setupFetchedResultsController() {
-        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        let fetchRequest: NSFetchRequest<SavedPhoto> = SavedPhoto.fetchRequest()
         fetchRequest.sortDescriptors = []
-        let predicateForLat = NSPredicate(format: "lat == %@", selectedPin.lat)
-        let predicateForLon = NSPredicate(format: "lon == %@", selectedPin.lon)
-        let filter = NSCompoundPredicate(andPredicateWithSubpredicates: [predicateForLat, predicateForLon])
-        fetchRequest.predicate = filter
+        let predicate = NSPredicate(format: "pin == %@", selectedPin)
+        fetchRequest.predicate = predicate
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.shared.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
         do {
@@ -79,7 +87,7 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
     }
- */
+ 
     
     private func configureDataSource() {
         let dataSource = UICollectionViewDiffableDataSource<Section, Int>(collectionView: collectionView) {
