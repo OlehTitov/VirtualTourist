@@ -18,7 +18,7 @@ class FlickrClient {
         
         var stringValue: String {
             switch self {
-            case .getPhotosForLocation(let lat, let lon, let radius, let page): return Endpoints.base + "api_key=\(FlickrApiKey.key)" + "&format=json" + "&lat=\(lat)" + "&lon=\(lon)" + "&radius=\(radius)" + "&page=\(page)" + "&nojsoncallback=1"
+            case .getPhotosForLocation(let lat, let lon, let radius, let page): return Endpoints.base + "api_key=\(FlickrApiKey.key)" + "&format=json" + "&lat=\(lat)" + "&lon=\(lon)" + "&radius=\(radius)" + "&page=\(page)" + "&per_page=10" + "&nojsoncallback=1"
             }
         }
         
@@ -36,6 +36,13 @@ class FlickrClient {
                 completion([], error)
             }
         }
+    }
+    
+    class func downloadImage(path: URL, completion: @escaping (Data?, Error?) -> Void) {
+        let task = URLSession.shared.dataTask(with: path) { data, response, error in
+            completion(data, error)
+        }
+        task.resume()
     }
     
     class func taskForGetRequest<ResponseType: Decodable>(url: URL, response: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) {

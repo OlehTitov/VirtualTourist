@@ -16,6 +16,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     //MARK: - PROPERTIES
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     
+    //MARK: - OUTLETS
     @IBOutlet weak var mapView: MKMapView!
     
     //MARK: - VIEW DID LOAD
@@ -58,6 +59,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             mapView.addAnnotation(annotation)
+            
         }
         sender.state = .ended
     }
@@ -102,9 +104,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         self.navigationController?.pushViewController(photoAlbumVC, animated: true)
     }
     
-    func handleGetListOfPhotosForLocation(photos: [Photo], error: Error?) {
-        print(photos)
-    }
     
 }
 
@@ -130,20 +129,38 @@ extension MapVC: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        // Get map prperties to pass to next VC
-        let annotation = view.annotation
+        // Get zoom level of current view to pass it to the next VC
         let altitude = mapView.camera.altitude
         
-        // Set properties for PhotoAlbumVC
+        // Unwrap annotation
+        guard let annotation = view.annotation else {
+            return
+        }
+        
+        // Get current coordinates
+        let lat = annotation.coordinate.latitude
+        let lon = annotation.coordinate.longitude
+        
+        // Define next VC and pass zoom level
         let photoAlbumVC = self.storyboard?.instantiateViewController(identifier: "PhotoAlbumVC") as! PhotoAlbumVC
         photoAlbumVC.altitude = altitude
+        
+        // Find corresponding Pin in Core Data model
+        guard let pins = fetchedResultsController.fetchedObjects else {
+            return
+        }
+        for pin in pins {
+            if pin.lat == lat && pin.lon == lon {
+                // Set selected pin for PhotoAlbumVC
+                photoAlbumVC.selectedPin = pin
+            }
+        }
+        
+        
         photoAlbumVC.annotation = annotation
         
         // Go to PhotoAlbumVC
         self.navigationController?.pushViewController(photoAlbumVC, animated: true)
-        
-        // Network request to get images
-        FlickrClient.getListOfPhotosForLocation(lat: annotation?.coordinate.latitude ?? 0.0, lon: annotation?.coordinate.longitude ?? 0.0, radius: 7, page: 1, completion: handleGetListOfPhotosForLocation(photos:error:))
         
         //Deselect annotation
         mapView.deselectAnnotation(view.annotation!, animated: false)
