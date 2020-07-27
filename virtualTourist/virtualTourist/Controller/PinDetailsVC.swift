@@ -90,6 +90,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate {
         fetchedResultsController.delegate = self
         do {
             try fetchedResultsController.performFetch()
+            let pics = fetchedResultsController.fetchedObjects
             setupSnapshot()
         } catch {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
@@ -103,7 +104,12 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate {
                 guard let photoURL = URL(string: photo.imageURL ?? "") else {
                     return
                 }
-                FlickrClient.downloadImage(path: photoURL, completion: handleImageDownload(data:error:))
+                //Check if there are URLs
+                print(photoURL)
+                DispatchQueue.global(qos: .userInteractive).async {
+                    FlickrClient.downloadImage(path: photoURL, completion: handleImageDownload(data:error:))
+                }
+                
             }
         }
         
@@ -111,11 +117,28 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate {
             guard let data = data else {
                 return
             }
+            //Check if we have the data
+            print("Here goes the data from handleImageDownload: \(data)")
             // Save images to Core Data
             let image = SavedPhoto(context: DataController.shared.viewContext)
+            image.pin = self.selectedPin
             image.image = data
             try? DataController.shared.viewContext.save()
+            
+            DispatchQueue.main.async {
+                self.setupSnapshot()
+                // Check if we have have data in Core Data
+                let photosInModel = self.fetchedResultsController.fetchedObjects
+                print("Amount of photos in Core Data: \(photosInModel?.count)")
+            }
+            
         }
+    }
+    
+    //MARK: - FRC DELEGATE
+    // Whenever the content changes it updates the snapshot
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        setupSnapshot()
     }
     
     //MARK: - COLLECTION VIEW LAYOUT
