@@ -13,4 +13,6 @@ class CollectionViewCell: UICollectionViewCell {
     static let identifier = "imageCell"
     
     @IBOutlet weak var image: UIImageView!
+    
+    @IBOutlet weak var city: UILabel!
 }

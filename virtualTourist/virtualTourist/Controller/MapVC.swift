@@ -16,6 +16,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     
     //MARK: - PROPERTIES
     var fetchedResultsController: NSFetchedResultsController<Pin>!
+    var selectedPin: Pin!
     
     //MARK: - OUTLETS
     @IBOutlet weak var mapView: MKMapView!
@@ -46,27 +47,21 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     @objc func handleTap(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
             self.becomeFirstResponder()
-            print("user tapped")
             let location = sender.location(in: mapView)
             let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
-            let lat = coordinate.latitude
-            let lon = coordinate.longitude
             let pin = Pin(context: DataController.shared.viewContext)
-            pin.lat = lat
-            pin.lon = lon
+            pin.lat = coordinate.latitude
+            pin.lon = coordinate.longitude
             // Reverse geocode
             getPlaceName(pin: pin) { (address) in
                 guard let address = address else {
                     return
                 }
-                let country = address.country
-                let street = address.name
-                let city = address.locality
-                print("\(street) \(city) \(country)")
-                pin.street = street
-                pin.city = city
-                pin.country = country
+                pin.street = address.name
+                pin.city = address.locality
+                pin.country = address.country
             }
+            // Save to Core Data
             try? DataController.shared.viewContext.save()
             setupFetchedResultsController()
             // Add annotation:
@@ -75,6 +70,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             mapView.addAnnotation(annotation)
             
         }
+        // End gesture
         sender.state = .ended
     }
     
@@ -100,7 +96,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     }
     
     //MARK: - REVERSE GEOCODING TO GET ADDRESS
-    // The address name will be used in the table view
+    // The address name will be used later in the table view
     func getPlaceName(pin: Pin, completion: @escaping (CLPlacemark?) -> Void) {
         let location = CLLocation(latitude: pin.lat, longitude: pin.lon)
         let geocoder = CLGeocoder()
@@ -127,13 +123,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             self.mapView.addAnnotation(annotation)
         }
     }
-    
-    func showPhotoAlbum() {
-        let photoAlbumVC = self.storyboard?.instantiateViewController(identifier: "PhotoAlbumVC") as! PhotoAlbumVC
-        self.navigationController?.pushViewController(photoAlbumVC, animated: true)
-    }
-    
-    
 }
 
 extension MapVC: MKMapViewDelegate {
@@ -160,37 +149,22 @@ extension MapVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         // Get zoom level of current view to pass it to the next VC
         let altitude = mapView.camera.altitude
-        
-        // Unwrap annotation
         guard let annotation = view.annotation else {
             return
         }
-        
-        // Get current coordinates
-        let lat = annotation.coordinate.latitude
-        let lon = annotation.coordinate.longitude
-        
-        // Define next VC and pass zoom level
-        let photoAlbumVC = self.storyboard?.instantiateViewController(identifier: "PhotoAlbumVC") as! PhotoAlbumVC
-        photoAlbumVC.altitude = altitude
-        
-        // Find corresponding Pin in Core Data model
         guard let pins = fetchedResultsController.fetchedObjects else {
             return
         }
-        for pin in pins {
-            if pin.lat == lat && pin.lon == lon {
-                // Set selected pin for PhotoAlbumVC
-                photoAlbumVC.selectedPin = pin
-            }
+        for pin in pins where annotation.coordinate.latitude == pin.lat && annotation.coordinate.longitude == pin.lon {
+            print("It should be found")
+            selectedPin = pin
         }
-        
-        
-        photoAlbumVC.annotation = annotation
-        
-        // Go to PhotoAlbumVC
-        self.navigationController?.pushViewController(photoAlbumVC, animated: true)
-        
+        // Go to PinDetailVC
+        let pinDetailsVC = self.storyboard?.instantiateViewController(identifier: "PinDetailsVC") as! PinDetailsVC
+        pinDetailsVC.altitude = altitude
+        pinDetailsVC.selectedPin = selectedPin
+        pinDetailsVC.annotation = annotation
+        self.navigationController?.pushViewController(pinDetailsVC, animated: true)
         //Deselect annotation
         mapView.deselectAnnotation(view.annotation!, animated: false)
     }

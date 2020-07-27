@@ -11,7 +11,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
+class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate, UICollectionViewDelegateFlowLayout {
     
     //MARK: - PROPERTIES
     var dataSource: UICollectionViewDiffableDataSource<Int, SavedPhoto>?
@@ -29,10 +29,10 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
     //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupFetchedResultsController()
         configureDataSource()
-        collectionView.delegate = self
-        collectionView.dataSource = dataSource
+        
         // Network request to get images for the selected location
         FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: 1, completion: handleGetListOfPhotosForLocation(photos:error:))
         setupMapView()
@@ -101,12 +101,13 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
             (collectionView: UICollectionView, indexPath: IndexPath, photo: SavedPhoto) -> UICollectionViewCell? in
             
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: CollectionViewCell.identifier,
+                withReuseIdentifier: "imageCell",
                 for: indexPath) as? CollectionViewCell else { fatalError("Cannot create new cell") }
             cell.backgroundColor = .red
             // Populate the cell with image
             let image = UIImage(data: photo.image!)
             cell.image.image = image
+            cell.city.text = self.selectedPin.city
             return cell
         }
         setupSnapshot()
@@ -123,39 +124,6 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         setupSnapshot()
     }
-    
-    // Create Layout
-    func configureLayout() {
-        //1
-        collectionView.collectionViewLayout = createRowLayout()
-    }
-
-    func createRowLayout() -> UICollectionViewLayout {
-        //2
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                              heightDimension: .fractionalHeight(1.0))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        //3
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .fractionalWidth(0.33))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
-                                                       subitem: item, count: 3)
-        
-        //4
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-        
-        //5
-        let spacing = CGFloat(10)
-        group.interItemSpacing = .fixed(spacing)
-        section.interGroupSpacing = spacing
-        
-        //6
-        let layout = UICollectionViewCompositionalLayout(section: section)
-        return layout
-    }
-    
 }
 
 extension PhotoAlbumVC: MKMapViewDelegate {
@@ -177,9 +145,5 @@ extension PhotoAlbumVC: MKMapViewDelegate {
         
         return pinView
     }
-}
-
-extension PhotoAlbumVC: UICollectionViewDelegate {
-    
 }
 

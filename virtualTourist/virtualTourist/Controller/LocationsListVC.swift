@@ -75,6 +75,7 @@ class LocationsListVC: UITableViewController, NSFetchedResultsControllerDelegate
     }
     
     //MARK: - FRC DELEGATE
+    // Whenever the content changes it updates the snapshot
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         setupSnapshot()
     }
