@@ -37,7 +37,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         setupFetchedResultsController()
         configureDataSource()
         configureLayout()
-        downloadImages()
+        //downloadImages()
         setupMap()
     }
     
@@ -68,20 +68,19 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         dataSource = UICollectionViewDiffableDataSource<Int, SavedPhoto>(collectionView: photoCollection) {
             (collectionView: UICollectionView, indexPath: IndexPath, photo: SavedPhoto) -> UICollectionViewCell? in
             
-            // Get a cell of the desired kind.
+            // Create cell
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "photoCellIdentifier",
                 for: indexPath) as? CollectionViewPhotoCell else { fatalError("Cannot create new cell") }
             
-            // Populate the cell with our item description.
-            let img = UIImage(data: photo.image!)
-            print(img?.size as Any)
-            cell.photoView.image = img!
+            // Populate the cell with image
+            var image: UIImage!
+            if let photoImage = photo.image {
+                image = UIImage(data: photoImage)
+            }
+            //print(image.size as Any)
+            cell.photoView.image = image
             
-            // Make the corner of the cells round and sexy
-            //cell.contentView.layer.cornerRadius = 8
-            
-            // Return the cell.
             return cell
         }
         setupSnapshot()
@@ -143,8 +142,8 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
             DispatchQueue.main.async {
                 self.setupSnapshot()
                 // Check if we have have data in Core Data
-                let photosInModel = self.fetchedResultsController.fetchedObjects
-                print("Amount of photos in Core Data: \(photosInModel?.count)")
+                //let photosInModel = self.fetchedResultsController.fetchedObjects
+                //print("Amount of photos in Core Data: \(photosInModel?.count)")
             }
             
         }

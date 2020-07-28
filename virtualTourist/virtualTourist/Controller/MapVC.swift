@@ -17,6 +17,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     //MARK: - PROPERTIES
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var selectedPin: Pin!
+    var currentPinLat: Double = 0.0
+    var currentPinLon: Double = 0.0
     
     //MARK: - OUTLETS
     @IBOutlet weak var mapView: MKMapView!
@@ -42,8 +44,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         fetchedResultsController = nil
     }
     
-    //MARK: - METHODS
-    // Handle gesture recognizer tapping
+    //MARK: - LONG PRESS GESTURE
     @objc func handleTap(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
             self.becomeFirstResponder()
@@ -54,9 +55,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             pin.lon = coordinate.longitude
             // Reverse geocode
             getPlaceName(pin: pin) { (address) in
-                guard let address = address else {
-                    return
-                }
+                guard let address = address else { return }
                 pin.street = address.name
                 pin.city = address.locality
                 pin.country = address.country
@@ -68,10 +67,17 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             mapView.addAnnotation(annotation)
-            
+            //Before downloading images set values to current pin
+            currentPinLat = coordinate.latitude
+            currentPinLon = coordinate.longitude
+            //Start downloading images
+            downloadImages()
+            print("downloadImages() just finished")
         }
         // End gesture
         sender.state = .ended
+        
+        
     }
     
     func configureGestureRecognizer() {
@@ -83,6 +89,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         
     }
     
+    //MARK: - SETUP FRC
     fileprivate func setupFetchedResultsController() {
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
         fetchRequest.sortDescriptors = []
@@ -110,6 +117,42 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         }
     }
     
+    //MARK: - NETWORKING
+    private func downloadImages() {
+        FlickrClient.getListOfPhotosForLocation(lat: currentPinLat, lon: currentPinLon, radius: 7, page: 1) { (photos, error) in
+            print("Printing number of photos before loop \(photos.count)")
+            for photo in photos {
+                guard let photoURL = URL(string: photo.imageURL ?? "") else {
+                    return
+                }
+                //Check if there are URLs
+                print("Printing URL from loop in getListOfPhotosForLocation \(photoURL)")
+                DispatchQueue.global(qos: .userInteractive).async {
+                    FlickrClient.downloadImage(path: photoURL, completion: handleImageDownload(data:error:))
+                }
+            }
+        }
+        
+        func handleImageDownload(data: Data?, error: Error?) {
+            guard let data = data else {
+                return
+            }
+            //Check if we have the data
+            print("Here goes the data from handleImageDownload: \(data)")
+            // Save images to Core Data
+            let image = SavedPhoto(context: DataController.shared.viewContext)
+            //Find assosiated pin
+            guard let pins = fetchedResultsController.fetchedObjects else { return }
+            for pin in pins where currentPinLat == pin.lat && currentPinLon == pin.lon {
+                selectedPin = pin
+            }
+            image.pin = self.selectedPin
+            image.image = data
+            try? DataController.shared.viewContext.save()
+        }
+    }
+    
+    //MARK: - SHOW PINS ON THE MAP
     func attachPins() {
         guard let pins = fetchedResultsController.fetchedObjects else {
             return
@@ -125,6 +168,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     }
 }
 
+//MARK: - MAP VIEW DELEGATE
 extension MapVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -149,12 +193,8 @@ extension MapVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         // Get zoom level of current view to pass it to the next VC
         let altitude = mapView.camera.altitude
-        guard let annotation = view.annotation else {
-            return
-        }
-        guard let pins = fetchedResultsController.fetchedObjects else {
-            return
-        }
+        guard let annotation = view.annotation else { return }
+        guard let pins = fetchedResultsController.fetchedObjects else { return }
         for pin in pins where annotation.coordinate.latitude == pin.lat && annotation.coordinate.longitude == pin.lon {
             print("It should be found")
             selectedPin = pin
