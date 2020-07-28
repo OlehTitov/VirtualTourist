@@ -123,7 +123,6 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
                 DispatchQueue.global(qos: .userInteractive).async {
                     FlickrClient.downloadImage(path: photoURL, completion: handleImageDownload(data:error:))
                 }
-                
             }
         }
         
@@ -153,6 +152,14 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     // Whenever the content changes it updates the snapshot
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         setupSnapshot()
+    }
+    
+    //MARK: - COLLECTION VIEW DELEGATE
+    //Select photo to delete it from Core Data and diffable data source takes care to remove it from collection view
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedPhoto = fetchedResultsController.fetchedObjects![(indexPath as NSIndexPath).row]
+        DataController.shared.viewContext.delete(selectedPhoto)
+        try? DataController.shared.viewContext.save()
     }
     
     //MARK: - COLLECTION VIEW LAYOUT
@@ -254,6 +261,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
 }
 
+//MARK: - EXTENSION MAP VIEW DELEGATE
 extension PinDetailsVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         

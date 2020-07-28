@@ -45,6 +45,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     }
     
     //MARK: - LONG PRESS GESTURE
+    //Add annotation, create Pin object, reverse geocoding to get place name, save Pin to Core Data and download images
     @objc func handleTap(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
             self.becomeFirstResponder()
@@ -72,12 +73,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             currentPinLon = coordinate.longitude
             //Start downloading images
             downloadImages()
-            print("downloadImages() just finished")
         }
         // End gesture
         sender.state = .ended
-        
-        
     }
     
     func configureGestureRecognizer() {
@@ -86,7 +84,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         mapView.addGestureRecognizer(gestureRecognizer)
         gestureRecognizer.minimumPressDuration = 0.7
         gestureRecognizer.numberOfTapsRequired = 0
-        
     }
     
     //MARK: - SETUP FRC
