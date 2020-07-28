@@ -49,7 +49,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="BHp-Ie-DU9">
-                                <rect key="frame" x="0.0" y="191" width="414" height="705"/>
+                                <rect key="frame" x="0.0" y="226" width="414" height="670"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="f9P-53-Mgl">
                                     <size key="itemSize" width="128" height="128"/>
@@ -82,24 +82,36 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="8Vo-Ox-SUQ">
+                                <rect key="frame" x="0.0" y="44" width="414" height="180"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="180" id="OTQ-Lv-kqC"/>
+                                </constraints>
+                            </mapView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="BHp-Ie-DU9" firstAttribute="top" secondItem="J0n-hC-KdF" secondAttribute="top" constant="147" id="OYA-0f-s4G"/>
+                            <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="centerX" secondItem="XcG-XY-N9X" secondAttribute="centerX" id="Cls-N3-AcE"/>
+                            <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="leading" secondItem="J0n-hC-KdF" secondAttribute="leading" id="PUT-kV-tdw"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="leading" secondItem="J0n-hC-KdF" secondAttribute="leading" id="aXq-L5-oSW"/>
+                            <constraint firstItem="J0n-hC-KdF" firstAttribute="trailing" secondItem="8Vo-Ox-SUQ" secondAttribute="trailing" id="dCx-2j-QEq"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="trailing" secondItem="J0n-hC-KdF" secondAttribute="trailing" id="dib-RD-iau"/>
+                            <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="top" secondItem="J0n-hC-KdF" secondAttribute="top" id="hGV-ZH-soL"/>
                             <constraint firstAttribute="bottom" secondItem="BHp-Ie-DU9" secondAttribute="bottom" id="rmt-PF-c1k"/>
+                            <constraint firstItem="BHp-Ie-DU9" firstAttribute="top" secondItem="8Vo-Ox-SUQ" secondAttribute="bottom" constant="2" id="tmz-WJ-sQS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="J0n-hC-KdF"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="test" id="Ufe-93-i3E"/>
                     <connections>
+                        <outlet property="mapHeightConstraint" destination="OTQ-Lv-kqC" id="mgC-sQ-lLV"/>
+                        <outlet property="mapView" destination="8Vo-Ox-SUQ" id="AlV-Zg-SUn"/>
                         <outlet property="photoCollection" destination="BHp-Ie-DU9" id="6M3-6p-6Cq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FcU-53-ohW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3013" y="-781"/>
+            <point key="canvasLocation" x="3011.594202898551" y="-781.47321428571422"/>
         </scene>
         <!--Item-->
         <scene sceneID="Kgr-qA-LlS">

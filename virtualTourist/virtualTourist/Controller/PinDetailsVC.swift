@@ -11,28 +11,34 @@ import UIKit
 import CoreData
 import MapKit
 
-class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate {
+class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UICollectionViewDelegate {
     
-    let images: [UIImage] = [UIImage(named: "bmw")!, UIImage(named: "girl")!, UIImage(named: "sky")!, UIImage(named: "sea")!, UIImage(named: "burger")!, UIImage(named: "car")!, UIImage(named: "party")!]
+    //MARK: - PROPERTIES
     var altitude: CLLocationDistance!
     var annotation: MKAnnotation!
     var selectedPin: Pin!
     var dataSource: UICollectionViewDiffableDataSource<Int, SavedPhoto>! = nil
     var fetchedResultsController: NSFetchedResultsController<SavedPhoto>!
     var snapshot = NSDiffableDataSourceSnapshot<Int, SavedPhoto>()
+    let mapViewMaxHeight: CGFloat = 180
+    let mapViewMinHeight: CGFloat = 100
     
+    //MARK: - OUTLETS
     @IBOutlet weak var photoCollection: UICollectionView!
     
+    @IBOutlet weak var mapView: MKMapView!
+    
+    @IBOutlet weak var mapHeightConstraint: NSLayoutConstraint!
+
     //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Initial check for Selected pin: \(selectedPin.city)")
+        photoCollection.delegate = self
         setupFetchedResultsController()
         configureDataSource()
         configureLayout()
         downloadImages()
-        let numberOfPhotos = fetchedResultsController.fetchedObjects?.count
-        print(numberOfPhotos!)
+        setupMap()
     }
     
     //MARK: - VIEW WILL APPEAR
@@ -46,6 +52,16 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate {
         super.viewDidDisappear(animated)
         fetchedResultsController = nil
     }
+    //MARK: - SETUP MAP
+    private func setupMap() {
+        mapHeightConstraint.constant = 180
+        mapView.delegate = self
+        mapView.addAnnotation(annotation)
+        mapView.camera.altitude = 3000.00
+        let region = MKCoordinateRegion(center: annotation.coordinate, span: mapView.region.span)
+        mapView.setRegion(region, animated: true)
+    }
+    
     
     //MARK: - COLLECTION VIEW DIFFABLE DATA SOURCE
     private func configureDataSource() {
@@ -83,14 +99,13 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate {
         let fetchRequest: NSFetchRequest<SavedPhoto> = SavedPhoto.fetchRequest()
         fetchRequest.sortDescriptors = []
         //Check if we have selectedPin
-        print(selectedPin.city!)
+        
         let predicate = NSPredicate(format: "pin == %@", selectedPin)
         fetchRequest.predicate = predicate
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.shared.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
         do {
             try fetchedResultsController.performFetch()
-            let pics = fetchedResultsController.fetchedObjects
             setupSnapshot()
         } catch {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
@@ -238,4 +253,42 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate {
         return layout
     }
     
+}
+
+extension PinDetailsVC: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinTintColor = .red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+        }
+        else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+}
+
+//MARK: - SCROLL VIEW DELEGATE
+extension PinDetailsVC: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let y: CGFloat = scrollView.contentOffset.y
+        let newMapViewHeight: CGFloat = mapHeightConstraint.constant - y
+        
+        if newMapViewHeight > mapViewMaxHeight {
+            mapHeightConstraint.constant = mapViewMaxHeight
+        } else if newMapViewHeight < mapViewMinHeight {
+            mapHeightConstraint.constant = mapViewMinHeight
+        } else {
+            mapHeightConstraint.constant = newMapViewHeight
+            scrollView.contentOffset.y = 0 // block scroll view
+        }
+    }
 }
