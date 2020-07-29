@@ -22,6 +22,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     var snapshot = NSDiffableDataSourceSnapshot<Int, SavedPhoto>()
     let mapViewMaxHeight: CGFloat = 180
     let mapViewMinHeight: CGFloat = 100
+    var pageNumber: Int = 0
     
     //MARK: - OUTLETS
     @IBOutlet weak var photoCollection: UICollectionView!
@@ -33,11 +34,11 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = selectedPin.city
         photoCollection.delegate = self
         setupFetchedResultsController()
         configureDataSource()
         configureLayout()
-        //downloadImages()
         setupMap()
     }
     
@@ -52,6 +53,20 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         super.viewDidDisappear(animated)
         fetchedResultsController = nil
     }
+    //MARK: - IB ACTION NEW ALBUM BUTTON
+    @IBAction func newAlbumButton(_ sender: Any) {
+        //Erase previous images
+        guard let previousPhotos = fetchedResultsController.fetchedObjects else { return }
+        for photo in previousPhotos {
+            DataController.shared.viewContext.delete(photo)
+        }
+        try? DataController.shared.viewContext.save()
+        //Download new images
+        pageNumber += 1
+        downloadImages(page: pageNumber)
+    }
+    
+    
     //MARK: - SETUP MAP
     private func setupMap() {
         mapHeightConstraint.constant = 180
@@ -72,6 +87,9 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "photoCellIdentifier",
                 for: indexPath) as? CollectionViewPhotoCell else { fatalError("Cannot create new cell") }
+            //Setup placeholder
+            cell.backgroundColor = .gray
+            cell.photoView.image = UIImage(named: "imagePlaceholder")
             
             // Populate the cell with image
             var image: UIImage!
@@ -112,8 +130,8 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     }
     
     //MARK: - NETWORKING
-    private func downloadImages() {
-        FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: 1) { (photos, error) in
+    private func downloadImages(page: Int) {
+        FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: page) { (photos, error) in
             for photo in photos {
                 guard let photoURL = URL(string: photo.imageURL ?? "") else {
                     return

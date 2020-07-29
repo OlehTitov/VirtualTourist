@@ -65,7 +65,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vwt-DD-scE">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imagePlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="vwt-DD-scE">
                                                     <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                                 </imageView>
                                             </subviews>
@@ -88,15 +88,29 @@
                                     <constraint firstAttribute="height" constant="180" id="OTQ-Lv-kqC"/>
                                 </constraints>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jna-4C-vvw" customClass="NewAlbumButton" customModule="virtualTourist" customModuleProvider="target">
+                                <rect key="frame" x="100" y="801" width="214" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="bZ8-NL-Uaf"/>
+                                </constraints>
+                                <state key="normal" title="New Album"/>
+                                <connections>
+                                    <action selector="newAlbumButton:" destination="I5V-Gb-75o" eventType="touchUpInside" id="VQL-t2-3w4"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="J0n-hC-KdF" firstAttribute="trailing" secondItem="Jna-4C-vvw" secondAttribute="trailing" constant="100" id="0mJ-Sm-XQA"/>
+                            <constraint firstItem="Jna-4C-vvw" firstAttribute="leading" secondItem="J0n-hC-KdF" secondAttribute="leading" constant="100" id="5Sh-yl-jeS"/>
+                            <constraint firstItem="J0n-hC-KdF" firstAttribute="bottom" secondItem="Jna-4C-vvw" secondAttribute="bottom" constant="11" id="CUh-4u-jCa"/>
                             <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="centerX" secondItem="XcG-XY-N9X" secondAttribute="centerX" id="Cls-N3-AcE"/>
                             <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="leading" secondItem="J0n-hC-KdF" secondAttribute="leading" id="PUT-kV-tdw"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="leading" secondItem="J0n-hC-KdF" secondAttribute="leading" id="aXq-L5-oSW"/>
                             <constraint firstItem="J0n-hC-KdF" firstAttribute="trailing" secondItem="8Vo-Ox-SUQ" secondAttribute="trailing" id="dCx-2j-QEq"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="trailing" secondItem="J0n-hC-KdF" secondAttribute="trailing" id="dib-RD-iau"/>
                             <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="top" secondItem="J0n-hC-KdF" secondAttribute="top" id="hGV-ZH-soL"/>
+                            <constraint firstItem="Jna-4C-vvw" firstAttribute="centerX" secondItem="XcG-XY-N9X" secondAttribute="centerX" id="pjK-F6-Wje"/>
                             <constraint firstAttribute="bottom" secondItem="BHp-Ie-DU9" secondAttribute="bottom" id="rmt-PF-c1k"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="top" secondItem="8Vo-Ox-SUQ" secondAttribute="bottom" constant="2" id="tmz-WJ-sQS"/>
                         </constraints>
@@ -290,4 +304,7 @@
             <point key="canvasLocation" x="1047.8260869565217" y="109.82142857142857"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="imagePlaceholder" width="200" height="200"/>
+    </resources>
 </document>
