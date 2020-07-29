@@ -10,6 +10,8 @@ import Foundation
 
 class FlickrClient {
     
+    static var numberOfPages: Int = 0
+    
     enum Endpoints {
         
         static let base = "https://www.flickr.com/services/rest/?method=flickr.photos.search&"
@@ -31,6 +33,8 @@ class FlickrClient {
     class func getListOfPhotosForLocation(lat: Double, lon: Double, radius: Int, page: Int, completion: @escaping ([Photo], Error?) -> Void) {
         taskForGetRequest(url: Endpoints.getPhotosForLocation(lat, lon, radius, page).url, response: PhotosSearchResponse.self) { (response, error) in
             if let response = response {
+                let pages = response.photos.pages
+                numberOfPages = pages
                 completion(response.photos.photo, nil)
             } else {
                 completion([], error)

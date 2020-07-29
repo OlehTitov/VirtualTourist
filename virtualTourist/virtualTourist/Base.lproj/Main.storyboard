@@ -120,12 +120,71 @@
                     <connections>
                         <outlet property="mapHeightConstraint" destination="OTQ-Lv-kqC" id="mgC-sQ-lLV"/>
                         <outlet property="mapView" destination="8Vo-Ox-SUQ" id="AlV-Zg-SUn"/>
+                        <outlet property="newAlbum" destination="Jna-4C-vvw" id="1PG-0y-ax6"/>
                         <outlet property="photoCollection" destination="BHp-Ie-DU9" id="6M3-6p-6Cq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FcU-53-ohW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3011.594202898551" y="-781.47321428571422"/>
+        </scene>
+        <!--No Image FoundVC-->
+        <scene sceneID="bdR-jZ-1T3">
+            <objects>
+                <viewController storyboardIdentifier="NoImageFoundVC" id="ICF-vM-q7b" customClass="NoImageFoundVC" customModule="virtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mBd-I1-oBt">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="NoImagesFound" translatesAutoresizingMaskIntoConstraints="NO" id="2up-1o-N8P">
+                                <rect key="frame" x="0.0" y="64" width="414" height="300"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="300" id="CgK-Fr-rRD"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No images found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QOk-X7-MsU">
+                                <rect key="frame" x="20" y="384" width="374" height="34"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There are no more images for this location. Try to explore other places!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xO4-P7-OSE">
+                                <rect key="frame" x="20" y="448" width="374" height="41"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rXb-uJ-OOm">
+                                <rect key="frame" x="100" y="509" width="214" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="nbF-Fd-KJe"/>
+                                </constraints>
+                                <state key="normal" title="Return to map"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemGray6Color" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="xO4-P7-OSE" firstAttribute="top" secondItem="QOk-X7-MsU" secondAttribute="bottom" constant="30" id="3PN-qb-hCL"/>
+                            <constraint firstItem="2up-1o-N8P" firstAttribute="top" secondItem="4QS-Mf-cvI" secondAttribute="top" constant="20" id="4lz-er-b9s"/>
+                            <constraint firstItem="4QS-Mf-cvI" firstAttribute="trailing" secondItem="QOk-X7-MsU" secondAttribute="trailing" constant="20" id="8rf-7A-7ZW"/>
+                            <constraint firstItem="rXb-uJ-OOm" firstAttribute="top" secondItem="xO4-P7-OSE" secondAttribute="bottom" constant="20" id="GeW-VW-isZ"/>
+                            <constraint firstItem="4QS-Mf-cvI" firstAttribute="trailing" secondItem="rXb-uJ-OOm" secondAttribute="trailing" constant="100" id="GvK-Hm-ugG"/>
+                            <constraint firstItem="QOk-X7-MsU" firstAttribute="top" secondItem="2up-1o-N8P" secondAttribute="bottom" constant="20" id="Izj-03-59V"/>
+                            <constraint firstItem="4QS-Mf-cvI" firstAttribute="trailing" secondItem="2up-1o-N8P" secondAttribute="trailing" id="KG7-fV-GB3"/>
+                            <constraint firstItem="QOk-X7-MsU" firstAttribute="centerX" secondItem="mBd-I1-oBt" secondAttribute="centerX" id="YSJ-Y9-IeG"/>
+                            <constraint firstItem="rXb-uJ-OOm" firstAttribute="leading" secondItem="4QS-Mf-cvI" secondAttribute="leading" constant="100" id="cU8-ux-ZlC"/>
+                            <constraint firstItem="QOk-X7-MsU" firstAttribute="leading" secondItem="4QS-Mf-cvI" secondAttribute="leading" constant="20" id="fIX-hS-tV1"/>
+                            <constraint firstAttribute="trailing" secondItem="xO4-P7-OSE" secondAttribute="trailing" constant="20" id="kzh-LJ-aKf"/>
+                            <constraint firstItem="xO4-P7-OSE" firstAttribute="leading" secondItem="4QS-Mf-cvI" secondAttribute="leading" constant="20" id="o6m-Eq-lJh"/>
+                            <constraint firstItem="rXb-uJ-OOm" firstAttribute="centerX" secondItem="mBd-I1-oBt" secondAttribute="centerX" id="p3a-IC-bij"/>
+                            <constraint firstItem="2up-1o-N8P" firstAttribute="leading" secondItem="4QS-Mf-cvI" secondAttribute="leading" id="qGc-oq-Qvf"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="4QS-Mf-cvI"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TlS-AL-kqb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4073" y="-781"/>
         </scene>
         <!--Item-->
         <scene sceneID="Kgr-qA-LlS">
@@ -305,6 +364,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="NoImagesFound" width="400" height="400"/>
         <image name="imagePlaceholder" width="200" height="200"/>
     </resources>
 </document>

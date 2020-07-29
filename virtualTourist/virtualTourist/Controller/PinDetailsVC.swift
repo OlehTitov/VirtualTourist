@@ -30,6 +30,9 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     @IBOutlet weak var mapView: MKMapView!
     
     @IBOutlet weak var mapHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var newAlbum: NewAlbumButton!
+    
 
     //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
@@ -63,7 +66,16 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         try? DataController.shared.viewContext.save()
         //Download new images
         pageNumber += 1
-        downloadImages(page: pageNumber)
+        if pageNumber <= FlickrClient.numberOfPages {
+            downloadImages(page: pageNumber)
+        } else {
+            //TO DO: make view to display message to user that there ir no more images for this location
+            print("No more images bro")
+            //Show no image found VC
+            let noImageFoundVC = self.storyboard?.instantiateViewController(identifier: "NoImageFoundVC") as! NoImageFoundVC
+            self.navigationController?.pushViewController(noImageFoundVC, animated: true)
+        }
+        
     }
     
     
@@ -107,7 +119,8 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     private func setupSnapshot() {
         snapshot = NSDiffableDataSourceSnapshot<Int, SavedPhoto>()
         snapshot.appendSections([0])
-        snapshot.appendItems(fetchedResultsController.fetchedObjects ?? [])
+        guard let objects = fetchedResultsController.fetchedObjects else { return }
+        snapshot.appendItems(objects)
         dataSource?.apply(self.snapshot)
     }
     
