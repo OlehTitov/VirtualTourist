@@ -197,7 +197,7 @@ extension MapVC: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         // Get zoom level of current view to pass it to the next VC
-        let altitude = mapView.camera.altitude
+        //let altitude = mapView.camera.altitude
         guard let annotation = view.annotation else { return }
         guard let pins = fetchedResultsController.fetchedObjects else { return }
         for pin in pins where annotation.coordinate.latitude == pin.lat && annotation.coordinate.longitude == pin.lon {
@@ -206,9 +206,9 @@ extension MapVC: MKMapViewDelegate {
         }
         // Go to PinDetailVC
         let pinDetailsVC = self.storyboard?.instantiateViewController(identifier: "PinDetailsVC") as! PinDetailsVC
-        pinDetailsVC.altitude = altitude
+        //pinDetailsVC.altitude = altitude
         pinDetailsVC.selectedPin = selectedPin
-        pinDetailsVC.annotation = annotation
+        //pinDetailsVC.annotation = annotation
         self.navigationController?.pushViewController(pinDetailsVC, animated: true)
         //Deselect annotation
         mapView.deselectAnnotation(view.annotation!, animated: false)

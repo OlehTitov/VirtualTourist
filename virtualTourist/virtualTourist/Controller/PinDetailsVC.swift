@@ -14,8 +14,8 @@ import MapKit
 class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UICollectionViewDelegate {
     
     //MARK: - PROPERTIES
-    var altitude: CLLocationDistance!
-    var annotation: MKAnnotation!
+    //var altitude: CLLocationDistance!
+    //var annotation: MKAnnotation!
     var selectedPin: Pin!
     var dataSource: UICollectionViewDiffableDataSource<Int, SavedPhoto>! = nil
     var fetchedResultsController: NSFetchedResultsController<SavedPhoto>!
@@ -92,6 +92,8 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     private func setupMap() {
         mapHeightConstraint.constant = 180
         mapView.delegate = self
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = CLLocationCoordinate2D(latitude: selectedPin.lat, longitude: selectedPin.lon)
         mapView.addAnnotation(annotation)
         mapView.camera.altitude = 3000.00
         let region = MKCoordinateRegion(center: annotation.coordinate, span: mapView.region.span)

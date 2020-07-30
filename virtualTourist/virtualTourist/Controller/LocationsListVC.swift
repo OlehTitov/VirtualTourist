@@ -74,6 +74,16 @@ class LocationsListVC: UITableViewController, NSFetchedResultsControllerDelegate
         }
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedPin = fetchedResultsController.fetchedObjects![(indexPath as NSIndexPath).row]
+        
+        let pinDetailsVC = self.storyboard?.instantiateViewController(identifier: "PinDetailsVC") as! PinDetailsVC
+        pinDetailsVC.selectedPin = selectedPin
+        //pinDetailsVC.annotation = annotation
+        self.navigationController?.pushViewController(pinDetailsVC, animated: true)
+    }
+    
+    
     //MARK: - FRC DELEGATE
     // Whenever the content changes it updates the snapshot
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
