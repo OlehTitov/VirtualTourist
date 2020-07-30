@@ -22,6 +22,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     let mapViewMinHeight: CGFloat = 100
     var pageNumber: Int = 1
     var numberOfprocessedImages: Int = 0
+    var numberOfPhotosAtTheCurrentPage: Int = 0
     
     //MARK: - OUTLETS
     @IBOutlet weak var photoCollection: UICollectionView!
@@ -47,6 +48,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     //MARK: - VIEW WILL APPEAR
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = false
         setupFetchedResultsController()
     }
     
@@ -59,28 +61,28 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     //MARK: - IB ACTION NEW ALBUM BUTTON
     @IBAction func newAlbumButton(_ sender: Any) {
         numberOfprocessedImages = 0
-        
         updateInterfaceWhileNetworkActivity(isInProgress: true)
-        //newAlbum.isHidden = true
-        //networkActivityIndicator.startAnimating()
-        
-        //Erase previous images
+        pageNumber += 1
+        if pageNumber <= FlickrClient.numberOfPages {
+            erasePreviousAlbum()
+            downloadImages(page: pageNumber)
+        } else {
+            showNoImageFoundVC()
+            pageNumber = 1
+        }
+    }
+    
+    func erasePreviousAlbum() {
         guard let previousPhotos = fetchedResultsController.fetchedObjects else { return }
         for photo in previousPhotos {
             DataController.shared.viewContext.delete(photo)
         }
         try? DataController.shared.viewContext.save()
-        //Download new images
-        pageNumber += 1
-        if pageNumber <= FlickrClient.numberOfPages {
-            downloadImages(page: pageNumber)
-        } else {
-            showNoImageFoundVC()
-        }
     }
     
     func showNoImageFoundVC() {
         let noImageFoundVC = self.storyboard?.instantiateViewController(identifier: "NoImageFoundVC") as! NoImageFoundVC
+        noImageFoundVC.selectedPin = selectedPin
         self.navigationController?.pushViewController(noImageFoundVC, animated: true)
     }
     
@@ -143,6 +145,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     //MARK: - NETWORKING
     private func downloadImages(page: Int) {
         FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: page, perPage: FlickrClient.imagesPerPage) { (photos, error) in
+            self.numberOfPhotosAtTheCurrentPage = photos.count
             for photo in photos {
                 guard let photoURL = URL(string: photo.imageURL ?? "") else { return }
                 DispatchQueue.global(qos: .userInteractive).async {
@@ -166,7 +169,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
             numberOfprocessedImages += 1
             DispatchQueue.main.async {
                 self.setupSnapshot()
-                if (self.numberOfprocessedImages >= FlickrClient.imagesPerPage) || FlickrClient.errorWhileDownloadingImages {
+                if self.numberOfprocessedImages >= FlickrClient.imagesPerPage || self.numberOfprocessedImages >= self.numberOfPhotosAtTheCurrentPage {
                     self.updateInterfaceWhileNetworkActivity(isInProgress: false)
                     //self.newAlbum.isHidden = false
                     //self.networkActivityIndicator.stopAnimating()
