@@ -28,6 +28,7 @@
 		7CD6833024CE8BAE0091ED52 /* CollectionViewPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832F24CE8BAE0091ED52 /* CollectionViewPhotoCell.swift */; };
 		7CD6833224D134E60091ED52 /* NewAlbumButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6833124D134E50091ED52 /* NewAlbumButton.swift */; };
 		7CD6833424D178000091ED52 /* NoImageFoundVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6833324D177FF0091ED52 /* NoImageFoundVC.swift */; };
+		7CD6833624D300840091ED52 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6833524D300830091ED52 /* Colors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		7CD6832F24CE8BAE0091ED52 /* CollectionViewPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewPhotoCell.swift; sourceTree = "<group>"; };
 		7CD6833124D134E50091ED52 /* NewAlbumButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAlbumButton.swift; sourceTree = "<group>"; };
 		7CD6833324D177FF0091ED52 /* NoImageFoundVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoImageFoundVC.swift; sourceTree = "<group>"; };
+		7CD6833524D300830091ED52 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				7CD6833124D134E50091ED52 /* NewAlbumButton.swift */,
+				7CD6833524D300830091ED52 /* Colors.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 				7CD6832624CA8E320091ED52 /* PhotoAlbumVC.swift in Sources */,
 				7CD6833024CE8BAE0091ED52 /* CollectionViewPhotoCell.swift in Sources */,
 				7C1EFB6624C733DB005CF2D9 /* MapVC.swift in Sources */,
+				7CD6833624D300840091ED52 /* Colors.swift in Sources */,
 				7CD6833224D134E60091ED52 /* NewAlbumButton.swift in Sources */,
 				7CD6832124C93BF40091ED52 /* DataController.swift in Sources */,
 				7C45530524C6EB97001B5305 /* AppDelegate.swift in Sources */,

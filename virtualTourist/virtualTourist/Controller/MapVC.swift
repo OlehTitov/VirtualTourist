@@ -27,6 +27,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
+        self.navigationController?.isNavigationBarHidden = false
         configureGestureRecognizer()
         setupFetchedResultsController()
         attachPins()

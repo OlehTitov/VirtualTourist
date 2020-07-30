@@ -14,9 +14,19 @@ class tabBarVC: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        setupLogo()
     }
 
+    //MARK: - SETUP LOGO
+    func setupLogo() {
+        self.navigationController?.isNavigationBarHidden = false
+        let logo = UIImage(named: "travelBag")
+        let logoView = UIImageView(image: logo!)
+        logoView.contentMode = .scaleAspectFit
+        self.navigationItem.titleView = logoView
+        self.navigationController?.navigationBar.barTintColor = UIColor.gunPowder
+        self.tabBar.barTintColor = UIColor.gunPowder
+    }
 
 }
 

@@ -25,13 +25,9 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
     //MARK: - OUTLETS
     @IBOutlet weak var photoCollection: UICollectionView!
-    
     @IBOutlet weak var mapView: MKMapView!
-    
     @IBOutlet weak var mapHeightConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var newAlbum: NewAlbumButton!
-    
     @IBOutlet weak var networkActivityIndicator: UIActivityIndicatorView!
     
     //MARK: - VIEW DID LOAD
