@@ -23,6 +23,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     let mapViewMaxHeight: CGFloat = 180
     let mapViewMinHeight: CGFloat = 100
     var pageNumber: Int = 0
+    var numberOfprocessedImages: Int = 0
     
     //MARK: - OUTLETS
     @IBOutlet weak var photoCollection: UICollectionView!
@@ -63,6 +64,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
     //MARK: - IB ACTION NEW ALBUM BUTTON
     @IBAction func newAlbumButton(_ sender: Any) {
+        numberOfprocessedImages = 0
         newAlbum.isHidden = true
         networkActivityIndicator.startAnimating()
         //Erase previous images
@@ -78,15 +80,12 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         } else {
             showNoImageFoundVC()
         }
-        
-        
     }
     
     func showNoImageFoundVC() {
         let noImageFoundVC = self.storyboard?.instantiateViewController(identifier: "NoImageFoundVC") as! NoImageFoundVC
         self.navigationController?.pushViewController(noImageFoundVC, animated: true)
     }
-    
     
     //MARK: - SETUP MAP
     private func setupMap() {
@@ -100,7 +99,6 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         mapView.setRegion(region, animated: true)
     }
     
-    
     //MARK: - COLLECTION VIEW DIFFABLE DATA SOURCE
     private func configureDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Int, SavedPhoto>(collectionView: photoCollection) {
@@ -110,19 +108,13 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "photoCellIdentifier",
                 for: indexPath) as? CollectionViewPhotoCell else { fatalError("Cannot create new cell") }
-            //Setup placeholder
-            cell.contentView.backgroundColor = .gray
-            cell.photoView.image = UIImage(named: "imagePlaceholder")
-            
             
             // Populate the cell with image
             var image: UIImage!
             if let photoImage = photo.image {
                 image = UIImage(data: photoImage)
             }
-            //print(image.size as Any)
             cell.photoView.image = image
-            
             return cell
         }
         setupSnapshot()
@@ -132,7 +124,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         snapshot = NSDiffableDataSourceSnapshot<Int, SavedPhoto>()
         snapshot.appendSections([0])
         snapshot.appendItems(fetchedResultsController.fetchedObjects ?? [])
-        dataSource?.apply(self.snapshot)
+        dataSource?.apply(self.snapshot, animatingDifferences: true)
     }
     
     //MARK: - SETUP FRC
@@ -153,20 +145,13 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
     //MARK: - NETWORKING
     private func downloadImages(page: Int) {
-        
         FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: page) { (photos, error) in
             for photo in photos {
-                guard let photoURL = URL(string: photo.imageURL ?? "") else {
-                    return
-                }
-                //Check if there are URLs
-                print(photoURL)
+                guard let photoURL = URL(string: photo.imageURL ?? "") else { return }
                 DispatchQueue.global(qos: .userInteractive).async {
                     FlickrClient.downloadImage(path: photoURL, completion: handleImageDownload(data:error:))
                 }
             }
-            self.newAlbum.isHidden = false
-            self.networkActivityIndicator.stopAnimating()
         }
         
         
@@ -174,6 +159,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
             guard let data = data else {
                 return
             }
+            
             //Check if we have the data
             print("Here goes the data from handleImageDownload: \(data)")
             // Save images to Core Data
@@ -181,9 +167,13 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
             image.pin = self.selectedPin
             image.image = data
             try? DataController.shared.viewContext.save()
-            
+            numberOfprocessedImages += 1
             DispatchQueue.main.async {
                 self.setupSnapshot()
+                if self.numberOfprocessedImages >= 11 {
+                    self.newAlbum.isHidden = false
+                    self.networkActivityIndicator.stopAnimating()
+                }
             }
         }
         

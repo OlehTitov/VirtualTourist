@@ -38,7 +38,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         setupFetchedResultsController()
     }
     
-    //MARK: - VIEW WILL DISAPPEAR
+    //MARK: - VIEW DID DISAPPEAR
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         fetchedResultsController = nil
@@ -71,6 +71,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             //Before downloading images set values to current pin
             currentPinLat = coordinate.latitude
             currentPinLon = coordinate.longitude
+            //NEW LINE!
+            //setupFetchedResultsController()
             //Start downloading images
             downloadImages()
         }
@@ -116,7 +118,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     
     //MARK: - NETWORKING
     private func downloadImages() {
-        FlickrClient.downloadInProgress = true
         FlickrClient.getListOfPhotosForLocation(lat: currentPinLat, lon: currentPinLon, radius: 7, page: 1) { (photos, error) in
             self.findAssociatedPin()
             if photos.isEmpty {
@@ -132,23 +133,18 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         
         func handleImageDownload(data: Data?, error: Error?) {
             guard let data = data else { return }
-            //Check if we have the data
-            print("Here goes the data from handleImageDownload: \(data)")
             // Save images to Core Data
             let image = SavedPhoto(context: DataController.shared.viewContext)
-            
             image.pin = self.selectedPin
             image.image = data
             try? DataController.shared.viewContext.save()
         }
-        FlickrClient.downloadInProgress = false
     }
     
     func showNoImageFoundVC() {
         let noImageFoundVC = self.storyboard?.instantiateViewController(identifier: "NoImageFoundVC") as! NoImageFoundVC
         self.navigationController?.pushViewController(noImageFoundVC, animated: true)
     }
-    
     
     //MARK: - FIND ASSOCIATED PIN
     func findAssociatedPin() {
@@ -157,7 +153,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             selectedPin = pin
         }
     }
-    
     
     //MARK: - SHOW PINS ON THE MAP
     func attachPins() {
@@ -178,7 +173,6 @@ extension MapVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
-        
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         
         if pinView == nil {
@@ -191,26 +185,19 @@ extension MapVC: MKMapViewDelegate {
         else {
             pinView!.annotation = annotation
         }
-        
         return pinView
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        // Get zoom level of current view to pass it to the next VC
-        //let altitude = mapView.camera.altitude
         guard let annotation = view.annotation else { return }
         guard let pins = fetchedResultsController.fetchedObjects else { return }
         for pin in pins where annotation.coordinate.latitude == pin.lat && annotation.coordinate.longitude == pin.lon {
-            print("It should be found")
             selectedPin = pin
         }
-        // Go to PinDetailVC
         let pinDetailsVC = self.storyboard?.instantiateViewController(identifier: "PinDetailsVC") as! PinDetailsVC
-        //pinDetailsVC.altitude = altitude
         pinDetailsVC.selectedPin = selectedPin
-        //pinDetailsVC.annotation = annotation
         self.navigationController?.pushViewController(pinDetailsVC, animated: true)
-        //Deselect annotation
+        //Deselect annotation! - otherwise the pin won't be tappable
         mapView.deselectAnnotation(view.annotation!, animated: false)
     }
 }
