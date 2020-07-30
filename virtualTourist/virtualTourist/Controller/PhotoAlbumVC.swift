@@ -34,7 +34,7 @@ class PhotoAlbumVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         configureDataSource()
         
         // Network request to get images for the selected location
-        FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: 1, completion: handleGetListOfPhotosForLocation(photos:error:))
+        FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: 1, perPage: FlickrClient.imagesPerPage, completion: handleGetListOfPhotosForLocation(photos:error:))
         setupMapView()
     }
     

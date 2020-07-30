@@ -11,17 +11,18 @@ import Foundation
 class FlickrClient {
     
     static var numberOfPages: Int = 0
-    static var downloadInProgress = false
+    static var imagesPerPage: Int = 11
+    static var errorWhileDownloadingImages: Bool = false
     
     enum Endpoints {
         
         static let base = "https://www.flickr.com/services/rest/?method=flickr.photos.search&"
         
-        case getPhotosForLocation(Double, Double, Int, Int)
+        case getPhotosForLocation(Double, Double, Int, Int, Int)
         
         var stringValue: String {
             switch self {
-            case .getPhotosForLocation(let lat, let lon, let radius, let page): return Endpoints.base + "api_key=\(FlickrApiKey.key)" + "&format=json" + "&lat=\(lat)" + "&lon=\(lon)" + "&radius=\(radius)" + "&page=\(page)" + "&per_page=11" + "&nojsoncallback=1"
+            case .getPhotosForLocation(let lat, let lon, let radius, let page, let perPage): return Endpoints.base + "api_key=\(FlickrApiKey.key)" + "&format=json" + "&lat=\(lat)" + "&lon=\(lon)" + "&radius=\(radius)" + "&page=\(page)" + "&per_page=\(perPage)" + "&nojsoncallback=1"
             }
         }
         
@@ -31,8 +32,8 @@ class FlickrClient {
         
     }
     
-    class func getListOfPhotosForLocation(lat: Double, lon: Double, radius: Int, page: Int, completion: @escaping ([Photo], Error?) -> Void) {
-        taskForGetRequest(url: Endpoints.getPhotosForLocation(lat, lon, radius, page).url, response: PhotosSearchResponse.self) { (response, error) in
+    class func getListOfPhotosForLocation(lat: Double, lon: Double, radius: Int, page: Int, perPage: Int, completion: @escaping ([Photo], Error?) -> Void) {
+        taskForGetRequest(url: Endpoints.getPhotosForLocation(lat, lon, radius, page, perPage).url, response: PhotosSearchResponse.self) { (response, error) in
             if let response = response {
                 let pages = response.photos.pages
                 numberOfPages = pages
@@ -45,6 +46,9 @@ class FlickrClient {
     
     class func downloadImage(path: URL, completion: @escaping (Data?, Error?) -> Void) {
         let task = URLSession.shared.dataTask(with: path) { data, response, error in
+            if error != nil {
+               errorWhileDownloadingImages = true
+            }
             completion(data, error)
         }
         task.resume()

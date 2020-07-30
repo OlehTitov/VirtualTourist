@@ -118,7 +118,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     
     //MARK: - NETWORKING
     private func downloadImages() {
-        FlickrClient.getListOfPhotosForLocation(lat: currentPinLat, lon: currentPinLon, radius: 7, page: 1) { (photos, error) in
+        FlickrClient.getListOfPhotosForLocation(lat: currentPinLat, lon: currentPinLon, radius: 7, page: 1, perPage: FlickrClient.imagesPerPage) { (photos, error) in
             self.findAssociatedPin()
             if photos.isEmpty {
                 self.showNoImageFoundVC()

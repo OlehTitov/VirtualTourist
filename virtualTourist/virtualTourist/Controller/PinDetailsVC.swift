@@ -14,15 +14,13 @@ import MapKit
 class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UICollectionViewDelegate {
     
     //MARK: - PROPERTIES
-    //var altitude: CLLocationDistance!
-    //var annotation: MKAnnotation!
     var selectedPin: Pin!
     var dataSource: UICollectionViewDiffableDataSource<Int, SavedPhoto>! = nil
     var fetchedResultsController: NSFetchedResultsController<SavedPhoto>!
     var snapshot = NSDiffableDataSourceSnapshot<Int, SavedPhoto>()
     let mapViewMaxHeight: CGFloat = 180
     let mapViewMinHeight: CGFloat = 100
-    var pageNumber: Int = 0
+    var pageNumber: Int = 1
     var numberOfprocessedImages: Int = 0
     
     //MARK: - OUTLETS
@@ -65,8 +63,11 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     //MARK: - IB ACTION NEW ALBUM BUTTON
     @IBAction func newAlbumButton(_ sender: Any) {
         numberOfprocessedImages = 0
-        newAlbum.isHidden = true
-        networkActivityIndicator.startAnimating()
+        
+        updateInterfaceWhileNetworkActivity(isInProgress: true)
+        //newAlbum.isHidden = true
+        //networkActivityIndicator.startAnimating()
+        
         //Erase previous images
         guard let previousPhotos = fetchedResultsController.fetchedObjects else { return }
         for photo in previousPhotos {
@@ -145,7 +146,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
     //MARK: - NETWORKING
     private func downloadImages(page: Int) {
-        FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: page) { (photos, error) in
+        FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: page, perPage: FlickrClient.imagesPerPage) { (photos, error) in
             for photo in photos {
                 guard let photoURL = URL(string: photo.imageURL ?? "") else { return }
                 DispatchQueue.global(qos: .userInteractive).async {
@@ -153,7 +154,6 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
                 }
             }
         }
-        
         
         func handleImageDownload(data: Data?, error: Error?) {
             guard let data = data else {
@@ -170,11 +170,22 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
             numberOfprocessedImages += 1
             DispatchQueue.main.async {
                 self.setupSnapshot()
-                if self.numberOfprocessedImages >= 11 {
-                    self.newAlbum.isHidden = false
-                    self.networkActivityIndicator.stopAnimating()
+                if (self.numberOfprocessedImages >= FlickrClient.imagesPerPage) || FlickrClient.errorWhileDownloadingImages {
+                    self.updateInterfaceWhileNetworkActivity(isInProgress: false)
+                    //self.newAlbum.isHidden = false
+                    //self.networkActivityIndicator.stopAnimating()
                 }
             }
+        }
+        
+    }
+    
+    func updateInterfaceWhileNetworkActivity(isInProgress: Bool) {
+        newAlbum.isHidden = isInProgress
+        if isInProgress {
+            networkActivityIndicator.startAnimating()
+        } else {
+            networkActivityIndicator.stopAnimating()
         }
         
     }
