@@ -38,6 +38,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = selectedPin.city
+        self.navigationController?.isNavigationBarHidden = false
         photoCollection.delegate = self
         setupFetchedResultsController()
         configureDataSource()
@@ -56,8 +57,10 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         super.viewDidDisappear(animated)
         fetchedResultsController = nil
     }
+    
     //MARK: - IB ACTION NEW ALBUM BUTTON
     @IBAction func newAlbumButton(_ sender: Any) {
+        newAlbum.isHidden = true
         //Erase previous images
         guard let previousPhotos = fetchedResultsController.fetchedObjects else { return }
         for photo in previousPhotos {
@@ -69,13 +72,14 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         if pageNumber <= FlickrClient.numberOfPages {
             downloadImages(page: pageNumber)
         } else {
-            //TO DO: make view to display message to user that there ir no more images for this location
-            print("No more images bro")
-            //Show no image found VC
-            let noImageFoundVC = self.storyboard?.instantiateViewController(identifier: "NoImageFoundVC") as! NoImageFoundVC
-            self.navigationController?.pushViewController(noImageFoundVC, animated: true)
+            showNoImageFoundVC()
         }
         
+    }
+    
+    func showNoImageFoundVC() {
+        let noImageFoundVC = self.storyboard?.instantiateViewController(identifier: "NoImageFoundVC") as! NoImageFoundVC
+        self.navigationController?.pushViewController(noImageFoundVC, animated: true)
     }
     
     
@@ -119,8 +123,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     private func setupSnapshot() {
         snapshot = NSDiffableDataSourceSnapshot<Int, SavedPhoto>()
         snapshot.appendSections([0])
-        guard let objects = fetchedResultsController.fetchedObjects else { return }
-        snapshot.appendItems(objects)
+        snapshot.appendItems(fetchedResultsController.fetchedObjects ?? [])
         dataSource?.apply(self.snapshot)
     }
     
@@ -128,8 +131,6 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     fileprivate func setupFetchedResultsController() {
         let fetchRequest: NSFetchRequest<SavedPhoto> = SavedPhoto.fetchRequest()
         fetchRequest.sortDescriptors = []
-        //Check if we have selectedPin
-        
         let predicate = NSPredicate(format: "pin == %@", selectedPin)
         fetchRequest.predicate = predicate
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.shared.viewContext, sectionNameKeyPath: nil, cacheName: nil)
@@ -144,6 +145,8 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
     //MARK: - NETWORKING
     private func downloadImages(page: Int) {
+        FlickrClient.downloadInProgress = true
+        self.newAlbum.isHidden = true
         FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: page) { (photos, error) in
             for photo in photos {
                 guard let photoURL = URL(string: photo.imageURL ?? "") else {
@@ -156,6 +159,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
                 }
             }
         }
+        
         
         func handleImageDownload(data: Data?, error: Error?) {
             guard let data = data else {
@@ -171,12 +175,10 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
             
             DispatchQueue.main.async {
                 self.setupSnapshot()
-                // Check if we have have data in Core Data
-                //let photosInModel = self.fetchedResultsController.fetchedObjects
-                //print("Amount of photos in Core Data: \(photosInModel?.count)")
             }
-            
         }
+        FlickrClient.downloadInProgress = false
+        self.newAlbum.isHidden = false
     }
     
     //MARK: - FRC DELEGATE
@@ -186,7 +188,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     }
     
     //MARK: - COLLECTION VIEW DELEGATE
-    //Select photo to delete it from Core Data and diffable data source takes care to remove it from collection view
+    //Select photo to delete it from Core Data. Diffable data source takes care to remove it from collection view
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedPhoto = fetchedResultsController.fetchedObjects![(indexPath as NSIndexPath).row]
         DataController.shared.viewContext.delete(selectedPhoto)
@@ -196,7 +198,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     //MARK: - COLLECTION VIEW LAYOUT
     func configureLayout() {
         photoCollection.collectionViewLayout = generateLayout()
-        photoCollection.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        //photoCollection.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     
     func generateLayout() -> UICollectionViewLayout {

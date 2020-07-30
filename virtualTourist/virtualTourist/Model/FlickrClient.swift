@@ -11,6 +11,7 @@ import Foundation
 class FlickrClient {
     
     static var numberOfPages: Int = 0
+    static var downloadInProgress = false
     
     enum Endpoints {
         
@@ -20,7 +21,7 @@ class FlickrClient {
         
         var stringValue: String {
             switch self {
-            case .getPhotosForLocation(let lat, let lon, let radius, let page): return Endpoints.base + "api_key=\(FlickrApiKey.key)" + "&format=json" + "&lat=\(lat)" + "&lon=\(lon)" + "&radius=\(radius)" + "&page=\(page)" + "&per_page=10" + "&nojsoncallback=1"
+            case .getPhotosForLocation(let lat, let lon, let radius, let page): return Endpoints.base + "api_key=\(FlickrApiKey.key)" + "&format=json" + "&lat=\(lat)" + "&lon=\(lon)" + "&radius=\(radius)" + "&page=\(page)" + "&per_page=11" + "&nojsoncallback=1"
             }
         }
         

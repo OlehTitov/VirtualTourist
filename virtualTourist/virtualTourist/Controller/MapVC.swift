@@ -116,14 +116,14 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     
     //MARK: - NETWORKING
     private func downloadImages() {
+        FlickrClient.downloadInProgress = true
         FlickrClient.getListOfPhotosForLocation(lat: currentPinLat, lon: currentPinLon, radius: 7, page: 1) { (photos, error) in
-            print("Printing number of photos before loop \(photos.count)")
+            self.findAssociatedPin()
+            if photos.isEmpty {
+                self.showNoImageFoundVC()
+            }
             for photo in photos {
-                guard let photoURL = URL(string: photo.imageURL ?? "") else {
-                    return
-                }
-                //Check if there are URLs
-                print("Printing URL from loop in getListOfPhotosForLocation \(photoURL)")
+                guard let photoURL = URL(string: photo.imageURL ?? "") else { return }
                 DispatchQueue.global(qos: .userInteractive).async {
                     FlickrClient.downloadImage(path: photoURL, completion: handleImageDownload(data:error:))
                 }
@@ -131,29 +131,37 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         }
         
         func handleImageDownload(data: Data?, error: Error?) {
-            guard let data = data else {
-                return
-            }
+            guard let data = data else { return }
             //Check if we have the data
             print("Here goes the data from handleImageDownload: \(data)")
             // Save images to Core Data
             let image = SavedPhoto(context: DataController.shared.viewContext)
-            //Find assosiated pin
-            guard let pins = fetchedResultsController.fetchedObjects else { return }
-            for pin in pins where currentPinLat == pin.lat && currentPinLon == pin.lon {
-                selectedPin = pin
-            }
+            
             image.pin = self.selectedPin
             image.image = data
             try? DataController.shared.viewContext.save()
         }
+        FlickrClient.downloadInProgress = false
     }
+    
+    func showNoImageFoundVC() {
+        let noImageFoundVC = self.storyboard?.instantiateViewController(identifier: "NoImageFoundVC") as! NoImageFoundVC
+        self.navigationController?.pushViewController(noImageFoundVC, animated: true)
+    }
+    
+    
+    //MARK: - FIND ASSOCIATED PIN
+    func findAssociatedPin() {
+        guard let pins = fetchedResultsController.fetchedObjects else { return }
+        for pin in pins where currentPinLat == pin.lat && currentPinLon == pin.lon {
+            selectedPin = pin
+        }
+    }
+    
     
     //MARK: - SHOW PINS ON THE MAP
     func attachPins() {
-        guard let pins = fetchedResultsController.fetchedObjects else {
-            return
-        }
+        guard let pins = fetchedResultsController.fetchedObjects else { return }
         for pin in pins {
             let lat = CLLocationDegrees(pin.lat)
             let lon = CLLocationDegrees(pin.lon)
