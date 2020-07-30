@@ -40,7 +40,7 @@
             </objects>
             <point key="canvasLocation" x="2130" y="-408"/>
         </scene>
-        <!--test-->
+        <!--Pin DetailsVC-->
         <scene sceneID="BZ8-pq-xC1">
             <objects>
                 <viewController storyboardIdentifier="PinDetailsVC" id="I5V-Gb-75o" customClass="PinDetailsVC" customModule="virtualTourist" customModuleProvider="target" sceneMemberID="viewController">
@@ -88,6 +88,10 @@
                                     <constraint firstAttribute="height" constant="180" id="OTQ-Lv-kqC"/>
                                 </constraints>
                             </mapView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="eHD-ym-o4d">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                <color key="color" red="0.26274509800000001" green="0.26274509800000001" blue="0.26274509800000001" alpha="1" colorSpace="calibratedRGB"/>
+                            </activityIndicatorView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jna-4C-vvw" customClass="NewAlbumButton" customModule="virtualTourist" customModuleProvider="target">
                                 <rect key="frame" x="100" y="801" width="214" height="50"/>
                                 <constraints>
@@ -105,7 +109,9 @@
                             <constraint firstItem="Jna-4C-vvw" firstAttribute="leading" secondItem="J0n-hC-KdF" secondAttribute="leading" constant="100" id="5Sh-yl-jeS"/>
                             <constraint firstItem="J0n-hC-KdF" firstAttribute="bottom" secondItem="Jna-4C-vvw" secondAttribute="bottom" constant="11" id="CUh-4u-jCa"/>
                             <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="centerX" secondItem="XcG-XY-N9X" secondAttribute="centerX" id="Cls-N3-AcE"/>
+                            <constraint firstItem="eHD-ym-o4d" firstAttribute="centerY" secondItem="XcG-XY-N9X" secondAttribute="centerY" id="D3y-Cy-e57"/>
                             <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="leading" secondItem="J0n-hC-KdF" secondAttribute="leading" id="PUT-kV-tdw"/>
+                            <constraint firstItem="eHD-ym-o4d" firstAttribute="centerX" secondItem="XcG-XY-N9X" secondAttribute="centerX" id="a00-YO-Apb"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="leading" secondItem="J0n-hC-KdF" secondAttribute="leading" id="aXq-L5-oSW"/>
                             <constraint firstItem="J0n-hC-KdF" firstAttribute="trailing" secondItem="8Vo-Ox-SUQ" secondAttribute="trailing" id="dCx-2j-QEq"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="trailing" secondItem="J0n-hC-KdF" secondAttribute="trailing" id="dib-RD-iau"/>
@@ -116,10 +122,10 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="J0n-hC-KdF"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="test" id="Ufe-93-i3E"/>
                     <connections>
                         <outlet property="mapHeightConstraint" destination="OTQ-Lv-kqC" id="mgC-sQ-lLV"/>
                         <outlet property="mapView" destination="8Vo-Ox-SUQ" id="AlV-Zg-SUn"/>
+                        <outlet property="networkActivityIndicator" destination="eHD-ym-o4d" id="RHq-dF-SjT"/>
                         <outlet property="newAlbum" destination="Jna-4C-vvw" id="1PG-0y-ax6"/>
                         <outlet property="photoCollection" destination="BHp-Ie-DU9" id="6M3-6p-6Cq"/>
                     </connections>

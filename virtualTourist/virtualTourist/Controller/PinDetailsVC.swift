@@ -33,7 +33,8 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
     @IBOutlet weak var newAlbum: NewAlbumButton!
     
-
+    @IBOutlet weak var networkActivityIndicator: UIActivityIndicatorView!
+    
     //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +45,8 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         configureDataSource()
         configureLayout()
         setupMap()
+        networkActivityIndicator.hidesWhenStopped = true
+        
     }
     
     //MARK: - VIEW WILL APPEAR
@@ -61,6 +64,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     //MARK: - IB ACTION NEW ALBUM BUTTON
     @IBAction func newAlbumButton(_ sender: Any) {
         newAlbum.isHidden = true
+        networkActivityIndicator.startAnimating()
         //Erase previous images
         guard let previousPhotos = fetchedResultsController.fetchedObjects else { return }
         for photo in previousPhotos {
@@ -74,6 +78,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         } else {
             showNoImageFoundVC()
         }
+        
         
     }
     
@@ -104,8 +109,9 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
                 withReuseIdentifier: "photoCellIdentifier",
                 for: indexPath) as? CollectionViewPhotoCell else { fatalError("Cannot create new cell") }
             //Setup placeholder
-            cell.backgroundColor = .gray
+            cell.contentView.backgroundColor = .gray
             cell.photoView.image = UIImage(named: "imagePlaceholder")
+            
             
             // Populate the cell with image
             var image: UIImage!
@@ -145,8 +151,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
     //MARK: - NETWORKING
     private func downloadImages(page: Int) {
-        FlickrClient.downloadInProgress = true
-        self.newAlbum.isHidden = true
+        
         FlickrClient.getListOfPhotosForLocation(lat: selectedPin.lat, lon: selectedPin.lon, radius: 7, page: page) { (photos, error) in
             for photo in photos {
                 guard let photoURL = URL(string: photo.imageURL ?? "") else {
@@ -158,6 +163,8 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
                     FlickrClient.downloadImage(path: photoURL, completion: handleImageDownload(data:error:))
                 }
             }
+            self.newAlbum.isHidden = false
+            self.networkActivityIndicator.stopAnimating()
         }
         
         
@@ -177,8 +184,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
                 self.setupSnapshot()
             }
         }
-        FlickrClient.downloadInProgress = false
-        self.newAlbum.isHidden = false
+        
     }
     
     //MARK: - FRC DELEGATE
