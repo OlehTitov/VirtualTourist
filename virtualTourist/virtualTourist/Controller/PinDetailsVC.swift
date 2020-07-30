@@ -42,7 +42,6 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         configureLayout()
         setupMap()
         networkActivityIndicator.hidesWhenStopped = true
-        
     }
     
     //MARK: - VIEW WILL APPEAR
@@ -69,6 +68,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         } else {
             showNoImageFoundVC()
             pageNumber = 1
+            updateInterfaceWhileNetworkActivity(isInProgress: false)
         }
     }
     
@@ -102,12 +102,10 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     private func configureDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Int, SavedPhoto>(collectionView: photoCollection) {
             (collectionView: UICollectionView, indexPath: IndexPath, photo: SavedPhoto) -> UICollectionViewCell? in
-            
             // Create cell
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "photoCellIdentifier",
                 for: indexPath) as? CollectionViewPhotoCell else { fatalError("Cannot create new cell") }
-            
             // Populate the cell with image
             var image: UIImage!
             if let photoImage = photo.image {
@@ -155,13 +153,7 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         }
         
         func handleImageDownload(data: Data?, error: Error?) {
-            guard let data = data else {
-                return
-            }
-            
-            //Check if we have the data
-            print("Here goes the data from handleImageDownload: \(data)")
-            // Save images to Core Data
+            guard let data = data else { return }
             let image = SavedPhoto(context: DataController.shared.viewContext)
             image.pin = self.selectedPin
             image.image = data
@@ -171,12 +163,9 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
                 self.setupSnapshot()
                 if self.numberOfprocessedImages >= FlickrClient.imagesPerPage || self.numberOfprocessedImages >= self.numberOfPhotosAtTheCurrentPage {
                     self.updateInterfaceWhileNetworkActivity(isInProgress: false)
-                    //self.newAlbum.isHidden = false
-                    //self.networkActivityIndicator.stopAnimating()
                 }
             }
         }
-        
     }
     
     func updateInterfaceWhileNetworkActivity(isInProgress: Bool) {
@@ -186,7 +175,6 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
         } else {
             networkActivityIndicator.stopAnimating()
         }
-        
     }
     
     //MARK: - FRC DELEGATE

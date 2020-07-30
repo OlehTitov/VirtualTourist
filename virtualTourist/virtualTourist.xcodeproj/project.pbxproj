@@ -20,10 +20,8 @@
 		7CD6831E24C8C22E0091ED52 /* PhotosSearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6831D24C8C22E0091ED52 /* PhotosSearchResponse.swift */; };
 		7CD6832124C93BF40091ED52 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832024C93BF40091ED52 /* DataController.swift */; };
 		7CD6832424C944310091ED52 /* virtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832224C944310091ED52 /* virtualTourist.xcdatamodeld */; };
-		7CD6832624CA8E320091ED52 /* PhotoAlbumVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */; };
 		7CD6832824CAE63F0091ED52 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832724CAE63F0091ED52 /* CollectionViewCell.swift */; };
 		7CD6832A24CDBD050091ED52 /* LocationsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832924CDBD050091ED52 /* LocationsListVC.swift */; };
-		7CD6832C24CE85CB0091ED52 /* CustomCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832B24CE85CB0091ED52 /* CustomCollectionViewDelegate.swift */; };
 		7CD6832E24CE8AC30091ED52 /* PinDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832D24CE8AC30091ED52 /* PinDetailsVC.swift */; };
 		7CD6833024CE8BAE0091ED52 /* CollectionViewPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6832F24CE8BAE0091ED52 /* CollectionViewPhotoCell.swift */; };
 		7CD6833224D134E60091ED52 /* NewAlbumButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6833124D134E50091ED52 /* NewAlbumButton.swift */; };
@@ -47,10 +45,8 @@
 		7CD6831D24C8C22E0091ED52 /* PhotosSearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosSearchResponse.swift; sourceTree = "<group>"; };
 		7CD6832024C93BF40091ED52 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		7CD6832324C944310091ED52 /* virtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = virtualTourist.xcdatamodel; sourceTree = "<group>"; };
-		7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumVC.swift; sourceTree = "<group>"; };
 		7CD6832724CAE63F0091ED52 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		7CD6832924CDBD050091ED52 /* LocationsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsListVC.swift; sourceTree = "<group>"; };
-		7CD6832B24CE85CB0091ED52 /* CustomCollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewDelegate.swift; sourceTree = "<group>"; };
 		7CD6832D24CE8AC30091ED52 /* PinDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinDetailsVC.swift; sourceTree = "<group>"; };
 		7CD6832F24CE8BAE0091ED52 /* CollectionViewPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewPhotoCell.swift; sourceTree = "<group>"; };
 		7CD6833124D134E50091ED52 /* NewAlbumButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAlbumButton.swift; sourceTree = "<group>"; };
@@ -106,10 +102,8 @@
 			children = (
 				7C45530824C6EB97001B5305 /* tabBarVC.swift */,
 				7C1EFB6524C733DB005CF2D9 /* MapVC.swift */,
-				7CD6832524CA8E320091ED52 /* PhotoAlbumVC.swift */,
 				7CD6832724CAE63F0091ED52 /* CollectionViewCell.swift */,
 				7CD6832924CDBD050091ED52 /* LocationsListVC.swift */,
-				7CD6832B24CE85CB0091ED52 /* CustomCollectionViewDelegate.swift */,
 				7CD6832D24CE8AC30091ED52 /* PinDetailsVC.swift */,
 				7CD6832F24CE8BAE0091ED52 /* CollectionViewPhotoCell.swift */,
 				7CD6833324D177FF0091ED52 /* NoImageFoundVC.swift */,
@@ -231,11 +225,9 @@
 				7CD6832A24CDBD050091ED52 /* LocationsListVC.swift in Sources */,
 				7CD6832824CAE63F0091ED52 /* CollectionViewCell.swift in Sources */,
 				7CD6832E24CE8AC30091ED52 /* PinDetailsVC.swift in Sources */,
-				7CD6832C24CE85CB0091ED52 /* CustomCollectionViewDelegate.swift in Sources */,
 				7CD6832424C944310091ED52 /* virtualTourist.xcdatamodeld in Sources */,
 				7CD6831524C856EC0091ED52 /* FlickrClient.swift in Sources */,
 				7CD6833424D178000091ED52 /* NoImageFoundVC.swift in Sources */,
-				7CD6832624CA8E320091ED52 /* PhotoAlbumVC.swift in Sources */,
 				7CD6833024CE8BAE0091ED52 /* CollectionViewPhotoCell.swift in Sources */,
 				7C1EFB6624C733DB005CF2D9 /* MapVC.swift in Sources */,
 				7CD6833624D300840091ED52 /* Colors.swift in Sources */,
