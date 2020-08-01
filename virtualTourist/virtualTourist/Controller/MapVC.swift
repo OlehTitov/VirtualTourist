@@ -50,6 +50,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     @objc func handleTap(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
             self.becomeFirstResponder()
+            makeHapticFeedback()
             let location = sender.location(in: mapView)
             let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
             let pin = Pin(context: DataController.shared.viewContext)
@@ -73,7 +74,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             currentPinLat = coordinate.latitude
             currentPinLon = coordinate.longitude
             downloadImages()
-            goToPinDetailsVC(pin: pin)
         }
         // End gesture
         sender.state = .ended
@@ -87,10 +87,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         gestureRecognizer.numberOfTapsRequired = 0
     }
     
-    func goToPinDetailsVC(pin: Pin) {
-        let pinDetailsVC = self.storyboard?.instantiateViewController(identifier: "PinDetailsVC") as! PinDetailsVC
-        pinDetailsVC.selectedPin = pin
-        self.navigationController?.pushViewController(pinDetailsVC, animated: true)
+    func makeHapticFeedback() {
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
     }
     
     //MARK: - SETUP FRC
