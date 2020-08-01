@@ -72,10 +72,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             //Before downloading images set values to current pin
             currentPinLat = coordinate.latitude
             currentPinLon = coordinate.longitude
-            //NEW LINE!
-            //setupFetchedResultsController()
-            //Start downloading images
             downloadImages()
+            goToPinDetailsVC(pin: pin)
         }
         // End gesture
         sender.state = .ended
@@ -87,6 +85,12 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         mapView.addGestureRecognizer(gestureRecognizer)
         gestureRecognizer.minimumPressDuration = 0.7
         gestureRecognizer.numberOfTapsRequired = 0
+    }
+    
+    func goToPinDetailsVC(pin: Pin) {
+        let pinDetailsVC = self.storyboard?.instantiateViewController(identifier: "PinDetailsVC") as! PinDetailsVC
+        pinDetailsVC.selectedPin = pin
+        self.navigationController?.pushViewController(pinDetailsVC, animated: true)
     }
     
     //MARK: - SETUP FRC
@@ -195,6 +199,7 @@ extension MapVC: MKMapViewDelegate {
         for pin in pins where annotation.coordinate.latitude == pin.lat && annotation.coordinate.longitude == pin.lon {
             selectedPin = pin
         }
+        
         let pinDetailsVC = self.storyboard?.instantiateViewController(identifier: "PinDetailsVC") as! PinDetailsVC
         pinDetailsVC.selectedPin = selectedPin
         self.navigationController?.pushViewController(pinDetailsVC, animated: true)

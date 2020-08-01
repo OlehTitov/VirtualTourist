@@ -59,10 +59,10 @@ class PinDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIColl
     
     //MARK: - IB ACTION NEW ALBUM BUTTON
     @IBAction func newAlbumButton(_ sender: Any) {
-        numberOfprocessedImages = 0
         updateInterfaceWhileNetworkActivity(isInProgress: true)
         pageNumber += 1
-        if pageNumber <= FlickrClient.numberOfPages {
+        //Number of pages is obtained from Flickr response
+        if (pageNumber <= FlickrClient.numberOfPages) || FlickrClient.numberOfPages == 0 {
             erasePreviousAlbum()
             downloadImages(page: pageNumber)
         } else {
