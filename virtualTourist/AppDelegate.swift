@@ -16,6 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         DataController.shared.load()
         
+        func checkIfFirstLaunch() {
+            if UserDefaults.standard.bool(forKey: "HasLaunchedBefore") {
+                print("App has launched before")
+            } else {
+                UserDefaults.standard.set(true, forKey: "HasLaunchedBefore")
+            }
+        }
+        
         return true
     }
 

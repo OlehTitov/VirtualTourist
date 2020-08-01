@@ -12,7 +12,6 @@ class FlickrClient {
     
     static var numberOfPages: Int = 0
     static var imagesPerPage: Int = 11
-    static var errorWhileDownloadingImages: Bool = false
     
     enum Endpoints {
         
@@ -47,7 +46,7 @@ class FlickrClient {
     class func downloadImage(path: URL, completion: @escaping (Data?, Error?) -> Void) {
         let task = URLSession.shared.dataTask(with: path) { data, response, error in
             if error != nil {
-               errorWhileDownloadingImages = true
+               
             }
             completion(data, error)
         }
