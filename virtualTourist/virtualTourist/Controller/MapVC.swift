@@ -22,6 +22,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     
     //MARK: - OUTLETS
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var howToDropPinText: UILabel!
     
     //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
@@ -31,6 +32,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
         configureGestureRecognizer()
         setupFetchedResultsController()
         attachPins()
+        setupTipView()
+        showHowToDropPin()
     }
     
     //MARK: - VIEW WILL APPEAR
@@ -74,6 +77,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
             currentPinLat = coordinate.latitude
             currentPinLon = coordinate.longitude
             downloadImages()
+            hideTipView()
         }
         // End gesture
         sender.state = .ended
@@ -90,6 +94,27 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     func makeHapticFeedback() {
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
+    }
+    
+    //MARK: - SHOW TIPS HOW TO DROP PIN
+    //When the users open the app for the first time they will be presented view about how to drop pin
+    func showHowToDropPin() {
+        if UserDefaults.standard.bool(forKey: "ShowHowToDropPin") {
+            print("Show me tips")
+            howToDropPinText.isHidden = false
+            UserDefaults.standard.set(false, forKey: "ShowHowToDropPin")
+        } else {
+            print("Do not show tips, they know how to drop the pin")
+        }
+    }
+    
+    func setupTipView() {
+        howToDropPinText.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        hideTipView()
+    }
+    
+    func hideTipView() {
+        howToDropPinText.isHidden = true
     }
     
     //MARK: - SETUP FRC

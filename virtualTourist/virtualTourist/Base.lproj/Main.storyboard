@@ -20,11 +20,23 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="3QB-UT-lOW">
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                             </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap and hold to drop the pin" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L6a-eD-am1">
+                                <rect key="frame" x="20" y="733" width="374" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="55m-zb-8Dl"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3QB-UT-lOW" secondAttribute="bottom" id="A47-4N-EEq"/>
+                            <constraint firstItem="L6a-eD-am1" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="EEd-dt-MhK"/>
                             <constraint firstItem="3QB-UT-lOW" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="FmL-rq-6mp"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="L6a-eD-am1" secondAttribute="bottom" constant="20" id="Hch-1f-VIQ"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="L6a-eD-am1" secondAttribute="trailing" constant="20" id="IHz-P6-iWn"/>
                             <constraint firstItem="3QB-UT-lOW" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="JcU-Mf-Y8f"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3QB-UT-lOW" secondAttribute="trailing" id="nwe-M9-V7P"/>
                             <constraint firstItem="3QB-UT-lOW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="uC7-LJ-LPG"/>
@@ -36,6 +48,7 @@
                     </tabBarItem>
                     <navigationItem key="navigationItem" id="1uD-4n-gMB"/>
                     <connections>
+                        <outlet property="howToDropPinText" destination="L6a-eD-am1" id="4qc-ca-cFE"/>
                         <outlet property="mapView" destination="3QB-UT-lOW" id="Pr4-t7-Hfy"/>
                     </connections>
                 </viewController>

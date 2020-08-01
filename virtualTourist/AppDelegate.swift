@@ -11,19 +11,21 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    func checkIfFirstLaunch() {
+        if UserDefaults.standard.bool(forKey: "HasLaunchedBefore") {
+            print("App has launched before")
+        } else {
+            print("This is the first launch")
+            UserDefaults.standard.set(true, forKey: "HasLaunchedBefore")
+            UserDefaults.standard.set(true, forKey: "ShowHowToDropPin")
+        }
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         DataController.shared.load()
-        
-        func checkIfFirstLaunch() {
-            if UserDefaults.standard.bool(forKey: "HasLaunchedBefore") {
-                print("App has launched before")
-            } else {
-                UserDefaults.standard.set(true, forKey: "HasLaunchedBefore")
-            }
-        }
-        
+        checkIfFirstLaunch()
         return true
     }
 
