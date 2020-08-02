@@ -28,6 +28,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
+        setupLatestMapRegion()
         self.navigationController?.isNavigationBarHidden = false
         configureGestureRecognizer()
         setupFetchedResultsController()
@@ -115,6 +116,31 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     
     func hideTipView() {
         howToDropPinText.isHidden = true
+    }
+    
+    //MARK: - MANAGE MAP REGION
+    func saveMapRegion() {
+        let regionLat = mapView.region.center.latitude
+        let regionLon = mapView.region.center.longitude
+        let latDelta = mapView.region.span.latitudeDelta
+        let lonDelta = mapView.region.span.longitudeDelta
+        UserDefaults.standard.set(regionLat, forKey: "LatestRegionLat")
+        UserDefaults.standard.set(regionLon, forKey: "LatestRegionLon")
+        UserDefaults.standard.set(latDelta, forKey: "LatDelta")
+        UserDefaults.standard.set(lonDelta, forKey: "LonDelta")
+        UserDefaults.standard.set(true, forKey: "MapHistory")
+    }
+    
+    func setupLatestMapRegion() {
+        if UserDefaults.standard.bool(forKey: "MapHistory") {
+            let regionlat = UserDefaults.standard.double(forKey: "LatestRegionLat")
+            let regionlon = UserDefaults.standard.double(forKey: "LatestRegionLon")
+            let latDelta = UserDefaults.standard.double(forKey: "LatDelta")
+            let lonDelta = UserDefaults.standard.double(forKey: "LonDelta")
+            let center = CLLocationCoordinate2D(latitude: regionlat, longitude: regionlon)
+            let span = MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)
+            mapView.region = MKCoordinateRegion(center: center, span: span)
+        }
     }
     
     //MARK: - SETUP FRC
@@ -229,5 +255,10 @@ extension MapVC: MKMapViewDelegate {
         self.navigationController?.pushViewController(pinDetailsVC, animated: true)
         //Deselect annotation! - otherwise the pin won't be tappable
         mapView.deselectAnnotation(view.annotation!, animated: false)
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        saveMapRegion()
+        print(UserDefaults.standard.double(forKey: "MapAltitude"))
     }
 }

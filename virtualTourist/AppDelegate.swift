@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("This is the first launch")
             UserDefaults.standard.set(true, forKey: "HasLaunchedBefore")
             UserDefaults.standard.set(true, forKey: "ShowHowToDropPin")
+            UserDefaults.standard.set(false, forKey: "MapHistory")
         }
     }
     
