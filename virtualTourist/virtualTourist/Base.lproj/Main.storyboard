@@ -133,7 +133,6 @@
                             <constraint firstItem="J0n-hC-KdF" firstAttribute="trailing" secondItem="8Vo-Ox-SUQ" secondAttribute="trailing" id="dCx-2j-QEq"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="trailing" secondItem="J0n-hC-KdF" secondAttribute="trailing" id="dib-RD-iau"/>
                             <constraint firstItem="8Vo-Ox-SUQ" firstAttribute="top" secondItem="J0n-hC-KdF" secondAttribute="top" id="hGV-ZH-soL"/>
-                            <constraint firstItem="Jna-4C-vvw" firstAttribute="centerX" secondItem="XcG-XY-N9X" secondAttribute="centerX" id="pjK-F6-Wje"/>
                             <constraint firstAttribute="bottom" secondItem="BHp-Ie-DU9" secondAttribute="bottom" id="rmt-PF-c1k"/>
                             <constraint firstItem="BHp-Ie-DU9" firstAttribute="top" secondItem="8Vo-Ox-SUQ" secondAttribute="bottom" constant="2" id="tmz-WJ-sQS"/>
                         </constraints>
@@ -179,10 +178,11 @@
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rXb-uJ-OOm">
                                 <rect key="frame" x="100" y="509" width="214" height="50"/>
+                                <color key="backgroundColor" name="GunPowder"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="nbF-Fd-KJe"/>
                                 </constraints>
-                                <state key="normal" title="Return to map"/>
+                                <state key="normal" title="OK"/>
                                 <connections>
                                     <action selector="returnToMapTapped:" destination="ICF-vM-q7b" eventType="touchUpInside" id="65q-4E-F7z"/>
                                 </connections>
@@ -197,12 +197,10 @@
                             <constraint firstItem="4QS-Mf-cvI" firstAttribute="trailing" secondItem="rXb-uJ-OOm" secondAttribute="trailing" constant="100" id="GvK-Hm-ugG"/>
                             <constraint firstItem="QOk-X7-MsU" firstAttribute="top" secondItem="2up-1o-N8P" secondAttribute="bottom" constant="20" id="Izj-03-59V"/>
                             <constraint firstItem="4QS-Mf-cvI" firstAttribute="trailing" secondItem="2up-1o-N8P" secondAttribute="trailing" id="KG7-fV-GB3"/>
-                            <constraint firstItem="QOk-X7-MsU" firstAttribute="centerX" secondItem="mBd-I1-oBt" secondAttribute="centerX" id="YSJ-Y9-IeG"/>
                             <constraint firstItem="rXb-uJ-OOm" firstAttribute="leading" secondItem="4QS-Mf-cvI" secondAttribute="leading" constant="100" id="cU8-ux-ZlC"/>
                             <constraint firstItem="QOk-X7-MsU" firstAttribute="leading" secondItem="4QS-Mf-cvI" secondAttribute="leading" constant="20" id="fIX-hS-tV1"/>
                             <constraint firstAttribute="trailing" secondItem="xO4-P7-OSE" secondAttribute="trailing" constant="20" id="kzh-LJ-aKf"/>
                             <constraint firstItem="xO4-P7-OSE" firstAttribute="leading" secondItem="4QS-Mf-cvI" secondAttribute="leading" constant="20" id="o6m-Eq-lJh"/>
-                            <constraint firstItem="rXb-uJ-OOm" firstAttribute="centerX" secondItem="mBd-I1-oBt" secondAttribute="centerX" id="p3a-IC-bij"/>
                             <constraint firstItem="2up-1o-N8P" firstAttribute="leading" secondItem="4QS-Mf-cvI" secondAttribute="leading" id="qGc-oq-Qvf"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="4QS-Mf-cvI"/>

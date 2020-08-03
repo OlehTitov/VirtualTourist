@@ -16,7 +16,7 @@ class NewAlbumButton: UIButton {
         super.awakeFromNib()
         
         layer.cornerRadius = 15
-        backgroundColor = UIColor.white
+        backgroundColor = UIColor.gunPowder
         
         
     }
