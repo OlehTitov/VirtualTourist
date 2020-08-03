@@ -27,9 +27,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     //MARK: - VIEW DID LOAD
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.isNavigationBarHidden = false
         mapView.delegate = self
         setupLatestMapRegion()
-        self.navigationController?.isNavigationBarHidden = false
         configureGestureRecognizer()
         setupFetchedResultsController()
         attachPins()
@@ -101,7 +101,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsCont
     //When the users open the app for the first time they will be presented view about how to drop pin
     func showHowToDropPin() {
         if UserDefaults.standard.bool(forKey: "ShowHowToDropPin") {
-            print("Show me tips")
             howToDropPinText.isHidden = false
             UserDefaults.standard.set(false, forKey: "ShowHowToDropPin")
         } else {
@@ -259,6 +258,5 @@ extension MapVC: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         saveMapRegion()
-        print(UserDefaults.standard.double(forKey: "MapAltitude"))
     }
 }
