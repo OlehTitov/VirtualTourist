@@ -1,5 +1,9 @@
 ![screenshots](https://github.com/OlehTitov/virtualTourist/blob/master/VirtualTouristBannerAlt.jpg)
 
+# Virtual Tourist
+- iOS app built to practice the implementation of Core Data in conjunction with networking and presenting the data with the help of diffable data source and collection view.
+- Built with Swift for iOS 13
+
 ## Core Data
 - The app uses a managed object model created in the Xcode Model Editor
 - The object model contains a one-to-many relationship between the Pin and Photo entities, with an appropriate inverse
